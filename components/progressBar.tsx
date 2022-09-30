@@ -38,7 +38,7 @@ const PasswordStrengthMeter: React.FC<PasswordStrengthMeterType> = (props) => {
     if (password.length === 0) return null; // don't render if password id empty
 
     return (
-        <div data-testid="component-password-strength-bar">
+        <div>
             <Progress value={score/4 * 100} color={color} />
         </div>
     );
