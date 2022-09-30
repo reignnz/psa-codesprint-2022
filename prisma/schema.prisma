@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 Int                 @id @default(autoincrement())
+  username           String              @unique
+  password_hash      String
+  staffs             Staff[]
+  designatedOfficers DesignatedOfficer[]
+  aetoes             Aetos[]
+
+  @@map("users")
+}
+
+model Staff {
+  user          User        @relation(fields: [userId], references: [id])
+  userId        Int         @unique
+  requestedPons PON[]
+  signatures    Signature[]
+
+  @@map("staff")
+}
+
+model DesignatedOfficer {
+  user       User  @relation(fields: [userId], references: [id])
+  userId     Int   @unique
+  issuedPons PON[]
+
+  @@map("designated_officers")
+}
+
+model Aetos {
+  user         User           @relation(fields: [userId], references: [id])
+  userId       Int            @unique
+  verfications Verification[]
+
+  @@map("aetos")
+}
+
+model PON {
+  id                 Int               @id @default(autoincrement())
+  requestor          Staff             @relation(fields: [requestorId], references: [userId])
+  requestorId        Int               @unique
+  issuer             DesignatedOfficer @relation(fields: [issuerId], references: [userId])
+  issuerId           Int               @unique
+  company_name       String
+  vehicle_number     String
+  driver_name        String
+  driver_pass_number String
+  item_description   String
+  picture            Bytes
+  isCompleted        Boolean           @default(false)
+  isArchived         Boolean           @default(false)
+  signature          Signature?
+  verifiation        Verification?
+
+  @@map("pon")
+}
+
+model Signature {
+  pon    PON   @relation(fields: [ponId], references: [id])
+  ponId  Int   @unique
+  user   Staff @relation(fields: [userId], references: [userId])
+  userId Int   @unique
+
+  @@map("signatures")
+}
+
+model Verification {
+  pon    PON   @relation(fields: [ponId], references: [id])
+  ponId  Int   @unique
+  user   Aetos @relation(fields: [userId], references: [userId])
+  userId Int   @unique
+
+  @@map("verifications")
+}
