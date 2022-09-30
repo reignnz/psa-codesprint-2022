@@ -11,15 +11,15 @@ datasource db {
 }
 
 model User {
-  id                 Int                 @id @default(autoincrement())
-  username           String              @unique
-  password_hash      String
-  staffs             Staff[]
-  firstName          String
-  lastName           String
-  designatedOfficers DesignatedOfficer[]
-  aetoes             Aetos[]
-  admins             Admin[]
+  id                Int                @id @default(autoincrement())
+  username          String             @unique
+  password_hash     String
+  firstName         String
+  lastName          String
+  staff             Staff?
+  designatedOfficer DesignatedOfficer?
+  aetoes            Aetos?
+  admin             Admin?
 
   @@map("users")
 }
