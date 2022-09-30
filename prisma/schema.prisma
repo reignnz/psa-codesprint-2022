@@ -18,14 +18,14 @@ model User {
   lastName          String
   staff             Staff?
   designatedOfficer DesignatedOfficer?
-  aetoes            Aetos?
+  aetos            Aetos?
   admin             Admin?
 
   @@map("users")
 }
 
 model Staff {
-  user          User        @relation(fields: [userId], references: [id])
+  user          User        @relation(fields: [userId], references: [id] , onDelete: Cascade)
   userId        Int         @unique
   requestedPons PON[]
   signatures    Signature[]
@@ -34,7 +34,7 @@ model Staff {
 }
 
 model DesignatedOfficer {
-  user       User  @relation(fields: [userId], references: [id])
+  user       User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int   @unique
   issuedPons PON[]
 
@@ -42,7 +42,7 @@ model DesignatedOfficer {
 }
 
 model Aetos {
-  user         User           @relation(fields: [userId], references: [id])
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       Int            @unique
   verfications Verification[]
 
@@ -58,9 +58,9 @@ model Admin {
 
 model PON {
   id                 Int               @id @default(autoincrement())
-  requestor          Staff             @relation(fields: [requestorId], references: [userId])
+  requestor          Staff             @relation(fields: [requestorId], references: [userId], onDelete: Cascade)
   requestorId        Int               @unique
-  issuer             DesignatedOfficer @relation(fields: [issuerId], references: [userId])
+  issuer             DesignatedOfficer @relation(fields: [issuerId], references: [userId], onDelete: Cascade)
   issuerId           Int               @unique
   company_name       String
   vehicle_number     String
@@ -79,23 +79,23 @@ model PON {
 model Picture {
   id      String @id @default(uuid())
   content Bytes
-  pon     PON    @relation(fields: [ponId], references: [id])
+  pon     PON    @relation(fields: [ponId], references: [id], onDelete: Cascade)
   ponId   Int
 }
 
 model Signature {
-  pon    PON   @relation(fields: [ponId], references: [id])
+  pon    PON   @relation(fields: [ponId], references: [id], onDelete: Cascade)
   ponId  Int   @unique
-  user   Staff @relation(fields: [userId], references: [userId])
+  user   Staff @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId Int   @unique
 
   @@map("signatures")
 }
 
 model Verification {
-  pon    PON   @relation(fields: [ponId], references: [id])
+  pon    PON   @relation(fields: [ponId], references: [id], onDelete: Cascade)
   ponId  Int   @unique
-  user   Aetos @relation(fields: [userId], references: [userId])
+  user   Aetos @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId Int   @unique
 
   @@map("verifications")
