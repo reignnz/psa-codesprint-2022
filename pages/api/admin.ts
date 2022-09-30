@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
+import zxcvbn from "zxcvbn";
 
 export default async function handler(
   req: NextApiRequest,
@@ -29,6 +30,13 @@ export default async function handler(
       return res
         .status(400)
         .json({ message: "First and last name are required" });
+    }
+
+    if (zxcvbn(password).score < 3) {
+      return res.status(400).json({
+        message:
+          "Password is too weak. Please use a stronger password with at least 3 of the following: uppercase, lowercase, numbers, and symbols",
+      });
     }
 
     const hash = bcrypt.hashSync(password, 10);
