@@ -19,6 +19,7 @@ model User {
   lastName           String
   designatedOfficers DesignatedOfficer[]
   aetoes             Aetos[]
+  admins             Admin[]
 
   @@map("users")
 }
@@ -46,6 +47,13 @@ model Aetos {
   verfications Verification[]
 
   @@map("aetos")
+}
+
+model Admin {
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique
+
+  @@map("admins")
 }
 
 model PON {
