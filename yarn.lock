@@ -696,6 +696,11 @@
   "resolved" "https://registry.npmjs.org/@types/scheduler/-/scheduler-0.16.2.tgz"
   "version" "0.16.2"
 
+"@types/zxcvbn@^4.4.1":
+  "integrity" "sha512-3NoqvZC2W5gAC5DZbTpCeJ251vGQmgcWIHQJGq2J240HY6ErQ9aWKkwfoKJlHLx+A83WPNTZ9+3cd2ILxbvr1w=="
+  "resolved" "https://registry.npmjs.org/@types/zxcvbn/-/zxcvbn-4.4.1.tgz"
+  "version" "4.4.1"
+
 "@typescript-eslint/parser@^5.21.0":
   "integrity" "sha512-LDqxZBVFFQnQRz9rUZJhLmox+Ep5kdUmLatLQnCRR6523YV+XhRjfYzStQ4MheFA8kMAfUlclHSbu+RKdRwQKw=="
   "resolved" "https://registry.npmjs.org/@typescript-eslint/parser/-/parser-5.38.1.tgz"
@@ -3198,3 +3203,8 @@
   "integrity" "sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q=="
   "resolved" "https://registry.npmjs.org/yocto-queue/-/yocto-queue-0.1.0.tgz"
   "version" "0.1.0"
+
+"zxcvbn@^4.4.2":
+  "integrity" "sha512-Bq0B+ixT/DMyG8kgX2xWcI5jUvCwqrMxSFam7m0lAf78nf04hv6lNCsyLYdyYTrCVMqNDY/206K7eExYCeSyUQ=="
+  "resolved" "https://registry.npmjs.org/zxcvbn/-/zxcvbn-4.4.2.tgz"
+  "version" "4.4.2"
