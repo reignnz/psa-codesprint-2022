@@ -57,13 +57,20 @@ model PON {
   driver_name        String
   driver_pass_number String
   item_description   String
-  picture            Bytes
   isCompleted        Boolean           @default(false)
   isArchived         Boolean           @default(false)
   signature          Signature?
   verifiation        Verification?
+  pictures          Picture[]
 
   @@map("pon")
+}
+
+model Picture {
+  id String @id @default(uuid())
+  content Bytes
+  pon PON @relation(fields: [ponId], references: [id])
+  ponId Int
 }
 
 model Signature {
