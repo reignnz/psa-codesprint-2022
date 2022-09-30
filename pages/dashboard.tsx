@@ -1,7 +1,7 @@
 
 import { Box, Stack, Text, Group, ActionIcon } from '@mantine/core'
 import { HiUserCircle } from "react-icons/hi"
-import { MdArrowForwardIos } from "react-icons/Md"
+import { MdArrowForwardIos } from "react-icons/md"
 import Link from "next/link"
 
 import { useMantineTheme } from '@mantine/core'
