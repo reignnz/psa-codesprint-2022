@@ -18,14 +18,14 @@ model User {
   lastName          String
   staff             Staff?
   designatedOfficer DesignatedOfficer?
-  aetos            Aetos?
+  aetos             Aetos?
   admin             Admin?
 
   @@map("users")
 }
 
 model Staff {
-  user          User        @relation(fields: [userId], references: [id] , onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int         @unique
   requestedPons PON[]
   signatures    Signature[]
