@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import bcrypt from "bcrypt";
 import zxcvbn from "zxcvbn";
+import hashPassword from "../../lib/hash";
 
 export default async function handler(
   req: NextApiRequest,
@@ -39,7 +39,7 @@ export default async function handler(
       });
     }
 
-    const hash = bcrypt.hashSync(password, 10);
+    const hash = hashPassword(password);
 
     const result = await prisma.admin.create({
       data: {
