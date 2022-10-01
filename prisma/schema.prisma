@@ -21,6 +21,7 @@ model User {
   aetos             Aetos?
   admin             Admin?
   requests          Request[]
+  visibilities      Visibility[]
 
   @@map("users")
 }
@@ -51,7 +52,7 @@ model Aetos {
 }
 
 model Admin {
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int  @unique
 
   @@map("admins")
@@ -87,8 +88,19 @@ model PON {
   request            Request?
   issued_at          DateTime          @default(now())
   last_updated_at    DateTime          @updatedAt
+  visibilities       Visibility[]
 
   @@map("pon")
+}
+
+model Visibility {
+  pon    PON  @relation(fields: [ponId], references: [id], onDelete: Cascade)
+  ponId  Int  @unique
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @unique
+
+  @@id([ponId, userId])
+  @@map("visibility")
 }
 
 model Picture {
