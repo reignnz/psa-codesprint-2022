@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { showNotification } from '@mantine/notifications';
 
 import {
   Box,
@@ -71,7 +72,11 @@ export default function LoginPage() {
     if (result.ok) {
       router.push("/");
     } else {
-      setError(await result.text());
+      showNotification({
+        title: 'Login Error',
+        message: await result.text(),
+        color: 'red'
+      });
     }
   }
 
