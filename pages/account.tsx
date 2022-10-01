@@ -1,4 +1,4 @@
-import { Button, Group, TextInput } from "@mantine/core";
+import { Button, Group, PasswordInput, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { withIronSessionSsr } from "iron-session/next";
 import { useRouter } from "next/router";
@@ -134,18 +134,18 @@ export default function AccountPage({
         >
           {passwordFormError && <p>{passwordFormError}</p>}
 
-          <TextInput
+          <PasswordInput
             label="Current Password"
             placeholder="Current Password"
             {...passwordForm.getInputProps("oldPassword")}
           />
-          <TextInput
+          <PasswordInput
             label="New Password"
             placeholder="New Password"
             {...passwordForm.getInputProps("newPassword")}
           />
           <PasswordStrengthMeter password={passwordForm.values.newPassword} />
-          <TextInput
+          <PasswordInput
             label="Repeat New Password"
             placeholder="Repeat New Password"
             {...passwordForm.getInputProps("newPasswordRepeat")}
