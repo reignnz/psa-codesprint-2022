@@ -7,8 +7,8 @@ import {
   Text,
   PasswordInput,
   TextInput,
-  Button,
   Group,
+  ActionIcon,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useMantineTheme } from "@mantine/core";
@@ -16,6 +16,9 @@ import { useMediaQuery } from "@mantine/hooks";
 import { withIronSessionSsr } from "iron-session/next";
 import { sessionOptions } from "../lib/session";
 import { useState } from "react";
+import { IoIosArrowForward } from "react-icons/io"
+import { default as PSALogo } from "../public/logo.svg"
+import Image from "next/image"
 
 export declare type FormData = {
   username: string,
@@ -63,6 +66,7 @@ export default function LoginPage() {
   });
 
   async function submitForm(values: FormData) {
+    console.log(values)
     const result = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -82,36 +86,49 @@ export default function LoginPage() {
 
   const handleSubmit = (values: typeof form.values) => {};
 
+
   return (
     <Box className="h-screen bg-no-repeat relative flex items-center justify-center">
-      <Stack className="border-2 border-solid border-gray-400 justify-center rounded-md shadow-sm">
+      <Stack className="">
         <Box sx={{ width: isMobile ? "250px" : "380px" }} className="p-5">
-          <Text size="lg" weight="bold">
-            Welcome Back
+          <Text className="text-3xl" weight="bold">
+            Login.
           </Text>
-          <Text>Login to your account</Text>
 
           <form onSubmit={form.onSubmit((values) => submitForm(values))}>
             {
               error ? <p className="text-sm text-red-500">{error}</p> : <></>
             }
-            <TextInput
-              label="User Id"
-              placeholder="User Id"
-              {...form.getInputProps("username")}
-            />
+            <Box className="border-2 border-solid border-white bg-white border-b-black rounded-b-none justify-center rounded-md shadow-sm my-4 mx-auto hover:drop-shadow-md">
+              <TextInput
+                label="Username"
+                placeholder="Input"
+                variant="unstyled"
+                sx={{ textDecoration: 'none', backgroundColor: 'white'}}
+                {...form.getInputProps("username")}
+              />
+            </Box>
 
-            <PasswordInput
-              mt="sm"
-              label="Password"
-              placeholder="password"
-              {...form.getInputProps("password")}
-            />
-
-            <Group position="right" mt="md">
-              <Button type="submit">Submit</Button>
-            </Group>
+            <Box className="border-2 border-solid border-white bg-white border-b-black rounded-b-none justify-center rounded-md shadow-sm my-4 mx-auto hover:drop-shadow-md">
+              <PasswordInput
+                label="Password"
+                placeholder="Input"
+                variant="unstyled"
+                sx={{ textDecoration: 'none', backgroundColor: 'white'}}
+                {...form.getInputProps("password")}
+              />
+            </Box>
+            <ActionIcon type="submit" size="xl" className="flex items-center justify-center mx-auto pt-4" sx={{backgroundColor: '#F4EFF4'}}>
+              <Stack spacing={2} className="hover:bg-gray-200">
+              <IoIosArrowForward size={50} color={'black'} />
+              <Text className="text-gray-600 mx-auto">Login</Text>
+              </Stack>
+            </ActionIcon>
           </form>
+          
+          <Group position="center" className="pt-10">
+            <Image src={PSALogo} alt="" height={200} width={300}/>
+          </Group>
         </Box>
       </Stack>
     </Box>
