@@ -105,7 +105,7 @@ export default function Pon({
     })
   );
 
-  const [editCompanyName, setEditCompanyName] = useState(ponDetails.company_name);
+  const [editCompanyName, setEditCompanyName] = useState(ponDetails.company_name || "Company Name");
 
   async function submitDetails() {
     const result = await fetch(`/api/pon/${pon.id}`, {
