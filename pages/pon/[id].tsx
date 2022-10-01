@@ -126,7 +126,7 @@ export default function Pon({
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(editableItems),
+      body: JSON.stringify({item_descriptions: editableItems}),
     });
     if (!result) {
       location.reload();
@@ -166,23 +166,22 @@ export default function Pon({
     <Box className="flex relative items-center justify-center py-20">
       <Stack sx={{ width: isMobile ? "280px" : "600px" }}>
         <Group
-          position={isMobile ? `center` : `apart`}
+          position= "apart"
           noWrap
-          className="font-bold"
-          sx={{ width: isMobile ? "200px" : "600px" }}
+          className="mx-auto"
+          sx={{ width: isMobile ? "270px" : "600px" }}
         >
           <Stack spacing={1}>
-            <Text className="text-lg"> PON </Text>
+            <Text className="sm:text-md lg:text-lg font-bold"> PON </Text>
             {editable == false ? (
               <></>
             ) : (
-              <Group className="text-lg">
+              <Group noWrap className="sm:text-sm lg:text-lg flex relative" spacing={0}>
                 {editName ? (
                   <TextInput
                     value={editCompanyName}
                     onChange={(event) => {
                       setEditCompanyName(event.currentTarget.value);
-                      submitCompany();
                     }}
                   />
                 ) : (
@@ -190,14 +189,15 @@ export default function Pon({
                 )}
                 {editName ? (
                   <ActionIcon
-                    className="hover:rounded-full"
+                    className="hover:rounded-full align-baseline"
                     onClick={() => setEditName(false)}
                   >
-                    <HiOutlineCheck size={15} />
+                    <HiOutlineCheck size={15} onClick={ () => submitCompany() }
+                      />
                   </ActionIcon>
                 ) : (
                   <ActionIcon
-                    className="hover:rounded-full"
+                    className="hover:rounded-full align-baseline"
                     onClick={() => setEditName(true)}
                   >
                     <HiPencil size={15} />
@@ -207,7 +207,7 @@ export default function Pon({
             )}
           </Stack>
           <Stack
-            className="p-2 m-2 flex justify-center items-center lg:w-1/2"
+            className="p-2 m-2 flex justify-center items-center mx-auto lg:w-1/2 drop-shadow-md"
             spacing={2}
             sx={{ backgroundColor: "#FFFBFE" }}
           >
