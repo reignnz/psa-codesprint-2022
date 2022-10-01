@@ -18,34 +18,48 @@ export default function Dashboard() {
     )
     const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.lg}px)`)
 
+    const pons = [
+        {ponId: '1234', Date: '2018-10-10', Status: 'Open'},
+        {ponId: '1111', Date: '2019-10-10', Status: 'Closed'},
+        {ponId: '1222', Date: '2020-10-10', Status: 'In Progress'},
+
+    ]
+
+    function random_rgba() {
+        var o = Math.round, r = Math.random, s = 255;
+        return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(1) + ')';
+    }
+    
     return (
         <Box className="flex relative items-center justify-center py-20">
             <Stack sx={{width: isMobile ? '280px' : '450px'}}>
                 <Group position="apart">
                     <Stack spacing={2}>
-                        <Text className="font-bold"> Hello! </Text>
-                        <Text className="font-bold"> Insert Name </Text>
+                        <Text className="font-bold text-3xl"> Hello </Text>
+                        <Text className="font-bold text-3xl"> Yu Dong! </Text>
                     </Stack>
                     
                     <HiUserCircle size={50} className="w-20"/>
 
                 </Group>
         
-                <Group position="apart" className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-md p-5">
+                {pons.map((pon, index) => (
+                    <Group key={pon.ponId} position="apart" className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150" sx={{backgroundColor: '#FFFBFE'}}>
                     <Stack spacing={1} className="font-bold">
                         <Text>PON</Text>
-                        <Text>#1234</Text>
+                        <Text sx={{color: random_rgba()}}>#{pon.ponId}</Text>
                     </Stack>
 
                     <Stack spacing={1}>
-                        <Text>Title: {}</Text>
-                        <Text>Date: {}</Text>
-                        <Text>Status: {}</Text>
+                        <Text>Date: {pon.Date}</Text>
+                        <Text>Status: {pon.Status}</Text>
                     </Stack>   
 
                     <Link href="/pon" passHref><ActionIcon><MdArrowForwardIos /></ActionIcon></Link>
                                     
                 </Group>
+                ))}
+                
             </Stack>
         
 
