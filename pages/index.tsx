@@ -20,14 +20,16 @@ export const getServerSideProps = withIronSessionSsr(
             }
         } else {
             return {
-                props: {},
+                props: {
+                    firstName: req.session.user.firstName,
+                },
             }
         }
     },
     sessionOptions
 )
 
-export default function Dashboard() {
+export default function Dashboard({ firstName }: { firstName: string }) {
     const theme = useMantineTheme()
     const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`)
     const isTablet = useMediaQuery(
@@ -43,8 +45,8 @@ export default function Dashboard() {
             <Stack sx={{width: isMobile ? '280px' : '450px'}}>
                 <Group position="apart">
                     <Stack spacing={2}>
-                        <Text className="font-bold"> Hello! </Text>
-                        <Text className="font-bold"> Insert Name </Text>
+                        <Text className="font-bold"> Hello, </Text>
+                        <Text className="font-bold"> { firstName }! </Text>
                     </Stack>
                     
                     <HiUserCircle size={50} className="w-20"/>
