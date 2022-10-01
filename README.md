@@ -1,34 +1,83 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# LongKenKaiMy PSA Code Sprint
 
-## Getting Started
+[[_TOC_]]
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+This is the repository for the LongKenKaiMy PSA Code Sprint. The code sprint is a 2-day event where participants will work on a project of their choice. The project can be anything from a simple script to a full-fledged application. Our goal is to have fun and learn something new.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Team Members
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+- [Yu Long](https://github.com/yulonglim)
+- [Kenneth Chow](https://github.com/reignnz)
+- [Kai Jun](https://github.com/nujiak)
+- [Myron](https://github.com/meerian)
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Project
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+### Project Name: 
 
-## Learn More
+__PSAccess__ - A website to digitize the process of using Pass Out Note (PON) system in PSA.
 
-To learn more about Next.js, take a look at the following resources:
+### Problem Statement
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Currently, the process of using POS system in PSA is not environmentally sustainable and error-prone. The process involves the following steps:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. Request for PON from a designated officer.
+2. Fill up the PON and 2 carbon copies are also required.
+3. Submit the PON to a counter signing officer (CSO) for verification and signing.
+4. Submit the PON to an AETOS officer for a final verification and archival of the PON
 
-## Deploy on Vercel
+The process is error-prone because the PON is a physical document that can be lost or tampered with. The process is also not environmentally sustainable because the PON is a physical document that is printed.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Proposed Solution
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+We propose to digitize the process of using POS system in PSA. The proposed solution involves the following steps:
+
+1. Request for PON from a designated officer on the website.
+2. Designated officer will approve the request and the PON will be generated.
+3. The PON can be filled up on the website.
+4. The PON can be shared to a CSO for verification and signing.
+5. The PON can be shared to an AETOS officer for a final verification and archival of the PON.
+
+The proposed solution is less error-prone because the PON is a digital document that can be easily edited and shared. The proposed solution is also more environmentally sustainable because the PON is a digital document that is not printed.
+
+# How To Use
+
+## Prerequisites
+- Internet connection is required to use the website.
+- Initial setup requires an admin account to be created with sufficiently strong password.
+
+## Initial Setup
+1. Got to [PSAccess]() to create an admin account.
+2. An admin account is required to create other accounts.
+3. Roles of the accounts are as follows:
+    - Admin: Can create other accounts and view system metrics.
+    - Staff: Can request for PON or verify and sign PONs.
+    - Designated Officer (DO): Can issue PONs.
+    - AETOS Officer (AO): Can verify and archive PONs.
+
+## Requesting for PON
+1. Staff can login to the website.
+2. Click on the `Request PON` button.
+3. Wait for the designated officer to approve the request.
+
+## Issuing PON
+1. Designated officer can login to the website.
+2. A list of PON requests will be shown.
+3. Click on the `Issue PON` button beside the request to issue the PON.
+
+## Filling up the PON
+1. Staff can login to the website.
+2. The staff can access the issued PON by clicking on the item.
+3. There will be text fields for the staff to fill up the PON.
+4. Once the PON is filled up, the staff can click on the `Submit` button to submit the PON and wait for the CSO to verify and sign the PON.
+
+## Verifying and Signing PON
+1. CSO (another staff) can login to the website.
+2. The CSO can access the PON by clicking on the item.
+3. The CSO would be able to verify the PON and sign the PON.
+
+## Verifying and Archiving PON
+1. AETOS officer can login to the website.
+2. The AETOS officer can access the PON by clicking on the item.
+3. The AETOS officer would be able to verify the PON and archive the PON.
