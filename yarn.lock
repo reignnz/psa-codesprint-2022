@@ -3133,7 +3133,7 @@
   "resolved" "https://registry.npmjs.org/stylis/-/stylis-4.0.13.tgz"
   "version" "4.0.13"
 
-"superjson@^1":
+"superjson@^1", "superjson@^1.10.0":
   "integrity" "sha512-ks6I5fm5KXUbDqt4Epe1VwkKDaC9+kIj5HF7yhiHjChFne0EkFqsnTv1mdHE2IT6fq2CzLC3zeA/fw0BRIoNwA=="
   "resolved" "https://registry.npmjs.org/superjson/-/superjson-1.10.0.tgz"
   "version" "1.10.0"
