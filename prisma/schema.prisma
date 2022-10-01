@@ -19,7 +19,6 @@ model User {
   requests        Request[]
   visibilities    Visibility[]
   isAdmin         Boolean        @default(false)
-  requestedPons   PON[]          @relation(name: "requestedPons")
   issuedPons      PON[]          @relation(name: "issuedPons")
   signatures      Signature[]
   verififications Verification[]
@@ -30,8 +29,7 @@ model User {
 
 model Request {
   id            Int      @id @default(autoincrement())
-  pon           PON?     @relation(fields: [ponId], references: [id], onDelete: Cascade)
-  ponId         Int?     @unique
+  pon           PON?
   requestedBy   User     @relation(fields: [requestedById], references: [id], onDelete: Cascade)
   requestedById Int
   submitted_at  DateTime @default(now())
@@ -41,10 +39,8 @@ model Request {
 
 model PON {
   id                 Int           @id @default(autoincrement())
-  requestedBy        User          @relation(fields: [requestedById], references: [id], onDelete: Cascade, name: "requestedPons")
-  requestedById      Int           @unique
   issuedBy           User          @relation(fields: [issuedById], references: [id], onDelete: Cascade, name: "issuedPons")
-  issuedById         Int           @unique
+  issuedById         Int
   company_name       String?
   vehicle_number     String?
   driver_name        String?
@@ -55,10 +51,11 @@ model PON {
   signature          Signature?
   verifiation        Verification?
   pictures           Picture[]
-  request            Request?
   issued_at          DateTime      @default(now())
   last_updated_at    DateTime      @updatedAt
   visibilities       Visibility[]
+  request            Request       @relation(fields: [requestId], references: [id])
+  requestId          Int           @unique
 
   @@map("pon")
 }

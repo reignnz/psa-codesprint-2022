@@ -26,7 +26,7 @@ export const getServerSideProps = withIronSessionSsr(
         },
         include: {
           requests: {
-            where: { ponId: null },
+            where: { pon: null },
           },
         },
       });
@@ -122,7 +122,7 @@ export default function Dashboard(user: (User & { requests: Request[] }) | null)
             }
           }}
         >
-          Request{user?.requests.length ? ` (${user?.requests.length})` : ""}
+          Request{user?.requests?.length ? ` (${user?.requests.length})` : ""}
         </Button>
       </Stack>
     </Box>
