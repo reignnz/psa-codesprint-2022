@@ -28,8 +28,11 @@ export type PasswordStrengthMeterType = {
   password: string;
 };
 
-const PasswordStrengthMeter: React.FC<PasswordStrengthMeterType> = (props) => {
-  const { password } = props;
+const PasswordStrengthMeter: React.FC<PasswordStrengthMeterType> = ({
+  password,
+}: {
+  password: string;
+}) => {
   const { score } = zxcvbn(password); // score: 0 - 4
   const { desc, color } = getPasswordAttrs(score);
   if (password.length === 0) return null; // don't render if password id empty
