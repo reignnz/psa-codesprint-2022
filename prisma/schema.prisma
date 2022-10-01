@@ -45,11 +45,11 @@ model PON {
   requestedById      Int           @unique
   issuedBy           User          @relation(fields: [issuedById], references: [id], onDelete: Cascade, name: "issuedPons")
   issuedById         Int           @unique
-  company_name       String
-  vehicle_number     String
-  driver_name        String
-  driver_pass_number String
-  item_description   String
+  company_name       String?
+  vehicle_number     String?
+  driver_name        String?
+  driver_pass_number String?
+  item_description   String[]
   isCompleted        Boolean       @default(false)
   isArchived         Boolean       @default(false)
   signature          Signature?
