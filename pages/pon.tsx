@@ -62,9 +62,7 @@ export default function Pon() {
                     <Group position='right'>
                         <Button onClick={() => {setEditDetails(false)
                         setEditableDetails(ponDetails)}}>Cancel</Button>
-                    <Button onClick={() => { 
-                        setEditDetails(false)
-                        console.log(editableDetails)}}> Submit </Button> </Group> : <></>}
+                    <Button onClick={() => { setEditDetails(false) }}> Submit </Button> </Group> : <></>}
 
                 </Stack>
 
@@ -79,7 +77,6 @@ export default function Pon() {
                             {editItems ? <><Text>{index+1}.</Text><TextInput value={editableItems[index]} onChange={(event) => {
                                 const newItem = editableItems
                                 newItem[index] = event.currentTarget.value
-                                console.log(newItem)
                                 setEditableItems(newItem)}}></TextInput></> : <Text>{index + 1}. {item}</Text>}
                         </Group>
                     ))}
@@ -87,9 +84,7 @@ export default function Pon() {
                         <Group position='right'>
                             <Button onClick={() => {setEditItems(false)
                             setEditableItems(ponDetails.Items)}}>Cancel</Button>
-                        <Button onClick={() => { 
-                            setEditItems(false)
-                            console.log(editableItems)}}> Submit </Button> </Group> : <></>}
+                        <Button onClick={() => { setEditItems(false) }}> Submit </Button> </Group> : <></>}
                 </Stack>
 
                 <Group className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-md p-5 my-5" sx={{backgroundColor: "#FFFBFE"}}>

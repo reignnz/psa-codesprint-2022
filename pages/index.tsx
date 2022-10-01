@@ -30,7 +30,6 @@ export const getServerSideProps = withIronSessionSsr(
           },
         },
       });
-      console.log(user);
       return {
         props: {
           ...user,
