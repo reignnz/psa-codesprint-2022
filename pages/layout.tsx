@@ -17,7 +17,7 @@ function Layout(props : Props) {
             font-weight: 400;
             line-height: 1.8;
             color: black;
-            background-color: white;
+            background-color: #F4EFF4;
             font-family: Roboto;
             align-items: center;
           }

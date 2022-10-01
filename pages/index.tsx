@@ -1,78 +1,104 @@
+import { Box, Stack, Text, Group, ActionIcon } from "@mantine/core";
+import { HiUserCircle } from "react-icons/hi";
+import { MdArrowForwardIos } from "react-icons/md";
+import Link from "next/link";
 
-import { Box, Stack, Text, Group, ActionIcon } from '@mantine/core'
-import { HiUserCircle } from "react-icons/hi"
-import { MdArrowForwardIos } from "react-icons/md"
-import Link from "next/link"
-
-import { useMantineTheme } from '@mantine/core'
-import { useMediaQuery } from '@mantine/hooks'
-import { sessionOptions } from '../lib/session'
-import { withIronSessionSsr } from 'iron-session/next'
+import { useMantineTheme } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
+import { sessionOptions } from "../lib/session";
+import { withIronSessionSsr } from "iron-session/next";
 
 export const getServerSideProps = withIronSessionSsr(
-    async function getServerSideProps({ req }) {
-        if (!req.session.user) {
-            return {
-                redirect: {
-                    destination: '/login',
-                    permanent: false,
-                },
-            }
-        } else {
-            return {
-                props: {
-                    firstName: req.session.user.firstName,
-                },
-            }
-        }
-    },
-    sessionOptions
-)
+  async function getServerSideProps({ req }) {
+    if (!req.session.user) {
+      return {
+        redirect: {
+          destination: "/login",
+          permanent: false,
+        },
+      };
+    } else {
+      return {
+        props: {
+          firstName: req.session.user.firstName,
+        },
+      };
+    }
+  },
+  sessionOptions
+);
 
 export default function Dashboard({ firstName }: { firstName: string }) {
-    const theme = useMantineTheme()
-    const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`)
-    const isTablet = useMediaQuery(
-        `(min-width: ${theme.breakpoints.sm}px) and (max-width: ${theme.breakpoints.md}px)`
-    )
-    const isLaptop = useMediaQuery(
-        `(min-width: ${theme.breakpoints.md}px) and (max-width: ${theme.breakpoints.lg}px)`
-    )
-    const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.lg}px)`)
+  const theme = useMantineTheme();
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
+  const isTablet = useMediaQuery(
+    `(min-width: ${theme.breakpoints.sm}px) and (max-width: ${theme.breakpoints.md}px)`
+  );
+  const isLaptop = useMediaQuery(
+    `(min-width: ${theme.breakpoints.md}px) and (max-width: ${theme.breakpoints.lg}px)`
+  );
+  const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.lg}px)`);
 
+  const pons = [
+    { ponId: "1234", Date: "2018-10-10", Status: "Open" },
+    { ponId: "1111", Date: "2019-10-10", Status: "Closed" },
+    { ponId: "1222", Date: "2020-10-10", Status: "In Progress" },
+  ];
+
+  function random_rgba() {
+    var o = Math.round,
+      r = Math.random,
+      s = 255;
     return (
-        <Box className="flex relative items-center justify-center py-20">
-            <Stack sx={{width: isMobile ? '280px' : '450px'}}>
-                <Group position="apart">
-                    <Stack spacing={2}>
-                        <Text className="font-bold"> Hello, </Text>
-                        <Text className="font-bold"> { firstName }! </Text>
-                    </Stack>
-                    
-                    <HiUserCircle size={50} className="w-20"/>
+      "rgba(" +
+      o(r() * s) +
+      "," +
+      o(r() * s) +
+      "," +
+      o(r() * s) +
+      "," +
+      r().toFixed(1) +
+      ")"
+    );
+  }
 
-                </Group>
-        
-                <Group position="apart" className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-md p-5">
-                    <Stack spacing={1} className="font-bold">
-                        <Text>PON</Text>
-                        <Text>#1234</Text>
-                    </Stack>
+  return (
+    <Box className="flex relative items-center justify-center py-20">
+      <Stack sx={{ width: isMobile ? "280px" : "450px" }}>
+        <Group position="apart">
+          <Stack spacing={2}>
+            <Text className="font-bold text-3xl"> Hello, </Text>
+            <Text className="font-bold"> {firstName}! </Text>
+          </Stack>
 
-                    <Stack spacing={1}>
-                        <Text>Title: {}</Text>
-                        <Text>Date: {}</Text>
-                        <Text>Status: {}</Text>
-                    </Stack>   
+          <HiUserCircle size={50} className="w-20" />
+        </Group>
 
-                    <Link href="/pon" passHref><ActionIcon><MdArrowForwardIos /></ActionIcon></Link>
-                                    
-                </Group>
+        {pons.map((pon, index) => (
+          <Group
+            key={pon.ponId}
+            position="apart"
+            className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150"
+            sx={{ backgroundColor: "#FFFBFE" }}
+          >
+            <Stack spacing={1} className="font-bold">
+              <Text>PON</Text>
+              <Text sx={{ color: random_rgba() }}>#{pon.ponId}</Text>
             </Stack>
-        
 
+            <Stack spacing={1}>
+              <Text>Date: {pon.Date}</Text>
+              <Text>Status: {pon.Status}</Text>
+            </Stack>
 
-        </Box>
-
-    )
+            <Link href="/pon" passHref>
+              <ActionIcon>
+                <MdArrowForwardIos />
+              </ActionIcon>
+            </Link>
+          </Group>
+        ))}
+      </Stack>
+    </Box>
+  );
 }
