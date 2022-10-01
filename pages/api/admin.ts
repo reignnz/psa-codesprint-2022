@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import zxcvbn from "zxcvbn";
 import hashPassword from "../../lib/hash";
 import validatePassword from "../../lib/password_check";
 
@@ -42,17 +41,15 @@ export default async function handler(
 
     const hash = hashPassword(password);
 
-    const result = await prisma.admin.create({
+    const result = await prisma.user.create({
       data: {
-        user: {
-          create: {
-            username,
-            password_hash: hash,
-            firstName,
-            lastName,
-          },
-        },
-      },
+        username,
+        password_hash: hash,
+        firstName,
+        lastName,
+        role: "STAFF",
+        isAdmin: true,
+      }
     });
 
     if (result) {

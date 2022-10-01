@@ -13,12 +13,6 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
     where: {
       username,
     },
-    include: {
-      admin: true,
-      staff: true,
-      designatedOfficer: true,
-      aetos: true,
-    },
   });
 
   if (!user) {
