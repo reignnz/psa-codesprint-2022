@@ -1,4 +1,4 @@
-import { Admin, DesignatedOfficer, Staff, User, Aetos } from "@prisma/client";
+import { User } from "@prisma/client";
 import type { IronSessionOptions } from "iron-session";
 
 export const sessionOptions: IronSessionOptions = {
@@ -8,17 +8,9 @@ export const sessionOptions: IronSessionOptions = {
     secure: process.env.NODE_ENV === "production",
   },
 };
-
-export declare type UserSession = User & {
-    admin: Admin | null;
-    staff: Staff | null;
-    designatedOfficer: DesignatedOfficer | null;
-    aetos: Aetos | null;
-}
-
 // This is where we specify the typings of req.session.*
 declare module "iron-session" {
   interface IronSessionData {
-    user: UserSession;
+    user: User;
   }
 }

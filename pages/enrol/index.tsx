@@ -1,13 +1,21 @@
-import { Button, Checkbox, Group, PasswordInput, TextInput } from "@mantine/core";
+import {
+  Button,
+  Checkbox,
+  Group,
+  PasswordInput,
+  SegmentedControl,
+  TextInput,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { withIronSessionSsr } from "iron-session/next";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { sessionOptions } from "../../lib/session";
+import { Role } from "@prisma/client";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
-    if (!req.session.user?.admin) {
+    if (!req.session.user?.isAdmin) {
       return {
         notFound: true,
       };
@@ -24,24 +32,18 @@ export declare type EnrolFormData = {
   username: string;
   firstName: string;
   lastName: string;
-  isAdmin: boolean;
-  isStaff: boolean;
-  isDesignatedOfficer: boolean;
-  isAetos: boolean;
+  role: Role;
 };
 
 export default function EnrolPage() {
-    const router = useRouter();
+  const router = useRouter();
 
   const form = useForm<EnrolFormData>({
     initialValues: {
       username: "",
       firstName: "",
       lastName: "",
-      isAdmin: false,
-      isStaff: false,
-      isDesignatedOfficer: false,
-      isAetos: false,
+      role: "STAFF",
     },
   });
 
@@ -57,7 +59,7 @@ export default function EnrolPage() {
     });
 
     if (response.ok) {
-        alert(`Enrolment successful. New password: ${await response.text()}`);
+      alert(`Enrolment successful. New password: ${await response.text()}`);
       router.push("/enrol");
     } else {
       setError(await response.text());
@@ -70,6 +72,14 @@ export default function EnrolPage() {
 
       <form onSubmit={form.onSubmit((data) => submitForm(data))}>
         {error ? <p className="text-sm text-red-500">{error}</p> : <></>}
+        <SegmentedControl
+          {...form.getInputProps("role")}
+          data={[
+            { label: "Staff", value: "STAFF" },
+            { label: "Designated Officer", value: "DESIGNATED_OFFICER" },
+            { label: "AETOS", value: "AETOS" },
+          ]}
+        />
         <TextInput
           label="Username"
           placeholder="Username"
@@ -85,15 +95,9 @@ export default function EnrolPage() {
           placeholder="Last Name"
           {...form.getInputProps("lastName")}
         />
-
-        <Checkbox label="Admin" {...form.getInputProps("isAdmin")} />
-        <Checkbox label="Staff" {...form.getInputProps("isStaff")} />
-        <Checkbox label="Designated Officer" {...form.getInputProps("isDesignatedOfficer")} />
-        <Checkbox label="Aetos" {...form.getInputProps("isAetos")} />
-        
         <Group position="right" mt="md">
-              <Button type="submit">Submit</Button>
-            </Group>
+          <Button type="submit">Submit</Button>
+        </Group>
       </form>
     </div>
   );

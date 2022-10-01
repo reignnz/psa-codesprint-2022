@@ -8,7 +8,7 @@ import hashPassword from "../../lib/hash";
 export default withIronSessionApiRoute(enrolRoute, sessionOptions);
 
 async function enrolRoute(req: NextApiRequest, res: NextApiResponse) {
-  if (!req.session?.user?.admin) {
+  if (!req.session?.user?.isAdmin) {
     return res.status(401).send("Unauthorized");
   }
 
@@ -30,10 +30,7 @@ async function enrolRoute(req: NextApiRequest, res: NextApiResponse) {
       password_hash: hash,
       firstName: data.firstName,
       lastName: data.lastName,
-      admin: data.isAdmin ? { create: {} } : undefined,
-      designatedOfficer: data.isDesignatedOfficer ? { create: {} } : undefined,
-      staff: data.isStaff ? { create: {} } : undefined,
-      aetos: data.isAetos ? { create: {} } : undefined,
+      role: data.role,
     },
   });
 
