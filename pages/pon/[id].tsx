@@ -18,6 +18,7 @@ import { withIronSessionSsr } from "iron-session/next";
 import { Picture, PON, Signature, Verification } from "@prisma/client";
 import { sessionOptions } from "../../lib/session";
 import { MdLocationSearching } from "react-icons/md";
+import { mapToHsl } from "../../lib/color";
 
 interface PonProps {
   editable: boolean;
@@ -125,7 +126,7 @@ export default function Pon({
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(editableItems),
+      body: JSON.stringify({item_descriptions: editableItems}),
     });
     if (!result) {
       location.reload();
@@ -153,23 +154,6 @@ export default function Pon({
     });
   }
 
-  function random_rgba() {
-    var o = Math.round,
-      r = Math.random,
-      s = 255;
-    return (
-      "rgba(" +
-      o(r() * s) +
-      "," +
-      o(r() * s) +
-      "," +
-      o(r() * s) +
-      "," +
-      r().toFixed(1) +
-      ")"
-    );
-  }
-
   const statusToColor = new Map([
     ["REQUESTED", "#0E80EACC"],
     ["ISSUED", "#430198CC"],
@@ -182,23 +166,22 @@ export default function Pon({
     <Box className="flex relative items-center justify-center py-20">
       <Stack sx={{ width: isMobile ? "280px" : "600px" }}>
         <Group
-          position={isMobile ? `center` : `apart`}
+          position= "apart"
           noWrap
-          className="font-bold"
-          sx={{ width: isMobile ? "200px" : "600px" }}
+          className="mx-auto"
+          sx={{ width: isMobile ? "270px" : "600px" }}
         >
           <Stack spacing={1}>
-            <Text className="text-lg"> PON </Text>
+            <Text className="sm:text-md lg:text-lg font-bold"> PON </Text>
             {editable == false ? (
               <></>
             ) : (
-              <Group className="text-lg">
+              <Group noWrap className="sm:text-sm lg:text-lg flex relative" spacing={0}>
                 {editName ? (
                   <TextInput
                     value={editCompanyName}
                     onChange={(event) => {
                       setEditCompanyName(event.currentTarget.value);
-                      submitCompany();
                     }}
                   />
                 ) : (
@@ -206,14 +189,15 @@ export default function Pon({
                 )}
                 {editName ? (
                   <ActionIcon
-                    className="hover:rounded-full"
+                    className="hover:rounded-full align-baseline"
                     onClick={() => setEditName(false)}
                   >
-                    <HiOutlineX size={15} />
+                    <HiOutlineCheck size={15} onClick={ () => submitCompany() }
+                      />
                   </ActionIcon>
                 ) : (
                   <ActionIcon
-                    className="hover:rounded-full"
+                    className="hover:rounded-full align-baseline"
                     onClick={() => setEditName(true)}
                   >
                     <HiPencil size={15} />
@@ -223,13 +207,13 @@ export default function Pon({
             )}
           </Stack>
           <Stack
-            className="p-2 m-2 flex justify-center items-center lg:w-1/2"
+            className="p-2 m-2 flex justify-center items-center mx-auto lg:w-1/2 drop-shadow-md"
             spacing={2}
             sx={{ backgroundColor: "#FFFBFE" }}
           >
             <Text
               className="sm:text-md md:text-lg lg:text-3xl"
-              sx={{ color: random_rgba() }}
+              sx={{ color: mapToHsl(pon.id) }}
             >
               #{pon.id}
             </Text>
