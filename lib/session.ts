@@ -1,4 +1,4 @@
-import { Admin, DesignatedOfficer, Staff, User } from "@prisma/client";
+import { Admin, DesignatedOfficer, Staff, User, Aetos } from "@prisma/client";
 import type { IronSessionOptions } from "iron-session";
 
 export const sessionOptions: IronSessionOptions = {
