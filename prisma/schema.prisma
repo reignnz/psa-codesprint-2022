@@ -49,7 +49,7 @@ model PON {
   vehicle_number     String?
   driver_name        String?
   driver_pass_number String?
-  item_description   String[]
+  item_descriptions  String[]
   isCompleted        Boolean       @default(false)
   isArchived         Boolean       @default(false)
   signature          Signature?
