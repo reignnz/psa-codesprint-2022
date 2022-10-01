@@ -40,11 +40,11 @@ export default function Dashboard() {
                     </Stack>
                     
                     <HiUserCircle size={50} className="w-20"/>
-
                 </Group>
         
                 {pons.map((pon, index) => (
-                    <Group key={pon.ponId} position="apart" className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150" sx={{backgroundColor: '#FFFBFE'}}>
+                    <Link key={pon.ponId} href="/pon" passHref>
+                    <Group position="apart" className=" rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150" sx={{backgroundColor: '#FFFBFE'}}>
                     <Stack spacing={1} className="font-bold">
                         <Text>PON</Text>
                         <Text sx={{color: random_rgba()}}>#{pon.ponId}</Text>
@@ -55,9 +55,10 @@ export default function Dashboard() {
                         <Text>Status: {pon.Status}</Text>
                     </Stack>   
 
-                    <Link href="/pon" passHref><ActionIcon><MdArrowForwardIos /></ActionIcon></Link>
+                    <ActionIcon><MdArrowForwardIos /></ActionIcon>
                                     
-                </Group>
+                    </Group>
+                    </Link>
                 ))}
                 
             </Stack>

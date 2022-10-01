@@ -1,20 +1,35 @@
-import { Stack, Group, Text, Box, ActionIcon, TextInput, Button, Image, BackgroundImage, Grid } from '@mantine/core' 
-import { HiPencil } from 'react-icons/hi'
-import { TiDelete, TiDeleteOutline } from 'react-icons/ti'
-import { useState, useRef } from 'react'
+import { ActionIcon, Box, Button, Image, Group, Stack, Text, TextInput, useMantineTheme } from '@mantine/core'
+import { useState } from 'react'
+import { AiOutlineMinusCircle } from 'react-icons/ai'
+import { HiPencil, HiPlus, HiOutlineX, HiOutlineCheck } from 'react-icons/hi'
+import { PON } from '@prisma/client'
+import { useMediaQuery } from '@mantine/hooks'
 
-export default function Pon() {
-    const ponDetails = {
+interface PonProps {
+    editable: boolean
+}
+
+export default function Pon({ editable } : PonProps) {
+    const theme = useMantineTheme()
+    const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`)
+    const isTablet = useMediaQuery(
+        `(min-width: ${theme.breakpoints.sm}px) and (max-width: ${theme.breakpoints.md}px)`
+    )
+    
+    const [ponDetails, setPonDetails] = useState({
         DriverName: 'Yu Dong',
         DriverPsaPass: '12345ABC',
         VehicleNumber: 'ABC123',
         Items: ['Stick', 'Stones', 'Paper'],
-        Images: ['']
-    }
+        Images: ['https://picsum.photos/seed/picsum/202', 'https://picsum.photos/seed/picsum/201',
+        'https://picsum.photos/seed/picsum/100', 'https://picsum.photos/seed/picsum/203', 'https://picsum.photos/seed/picsum/204',
+    'https://picsum.photos/seed/picsum/201', 'https://picsum.photos/seed/picsum/201']
+    })
 
     const [editDetails, setEditDetails] = useState(false)
     const [editItems, setEditItems] = useState(false)
     const [editImages, setEditImages] = useState(false)
+    const [editName, setEditName] = useState(false)
 
     const [editableDetails, setEditableDetails] = useState({
         DriverName: ponDetails.DriverName,
@@ -22,26 +37,60 @@ export default function Pon() {
         VehicleNumber: ponDetails.VehicleNumber
     })
 
-    const [editableItems, setEditableItems] = useState(ponDetails.Items)
+    const [editableItems, setEditableItems] = useState([...ponDetails.Items])
 
-    const randomImages = ['https://picsum.photos/seed/picsum/200', 'https://picsum.photos/seed/picsum/201',
-        'https://picsum.photos/seed/picsum/100', 'https://picsum.photos/seed/picsum/203', 'https://picsum.photos/seed/picsum/204',
-    'https://picsum.photos/seed/picsum/201', 'https://picsum.photos/seed/picsum/201']
+    const [editedImages, setEditedImages] = useState(ponDetails.Images.map(image => { return { selected: false, image }}))
+
+    const [editCompanyName, setEditCompanyName] = useState('ABC Company')
+
+    function random_rgba() {
+        var o = Math.round, r = Math.random, s = 255;
+        return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(1) + ')';
+    }
+
+    enum statusToColor {
+        REQUESTED = '#0E80EACC',
+        ISSUED = '#430198CC',
+        PENDING = '#EA9F0ECC',
+        SIGNED = '#439801CC',
+        VERIFIED = '#90730ACC'
+    }
 
     return (
         <Box className="flex relative items-center justify-center py-20">
-            <Stack sx={{width: '500px'}}>
-                <Group position="apart" className="font-bold">
-                    <Stack spacing={2}>
-                        <Text> PON </Text>
-                        <Text> #12345 </Text>
+            <Stack sx={{width: isMobile ? '280px' : '600px'}}>
+                <Group position={isMobile ? `center` : `apart`} noWrap className="font-bold" sx={{width: isMobile ? '200px' : '600px'}}>
+                    <Stack spacing={1} >
+                        <Text className="text-lg"> PON </Text>
+                        {editable == false ? <></> :
+                        <Group className="text-lg">
+                            {editName ? <TextInput value={editCompanyName} 
+                                onChange={(event) => setEditCompanyName(event.currentTarget.value)}/>
+                                :<Text>{editCompanyName}</Text>}
+                            {editName ? 
+                            <ActionIcon className="hover:rounded-full" onClick={() => setEditName(false)}>
+                                <HiOutlineX size={15}/>
+                            </ActionIcon>
+                            : 
+                            <ActionIcon className="hover:rounded-full" onClick={() => setEditName(true)}>
+                                <HiPencil size={15}/>
+                            </ActionIcon>}
+                        </Group> }
                     </Stack>
-                    <Box className="p-2 m-2" sx={{backgroundColor: "#FFFBFE"}}><Text>ABC Company</Text></Box>
+                    <Stack className="p-2 m-2 flex justify-center items-center lg:w-1/2" spacing={2} sx={{backgroundColor: "#FFFBFE"}}>
+                        <Text className="sm:text-md md:text-lg lg:text-3xl" sx={{color: random_rgba()}}>#12345</Text>
+                        <Group spacing={2} className="sm:text-sm md:text-sm lg:text-lg" >
+                            <Text>STATUS:</Text>
+                            <Text sx={{color:statusToColor['PENDING']}}>PENDING</Text>
+                        </Group>
+                        <Text className="text-xs text-gray-500">LAST UPDATED: 1/10/22 11:00:00</Text>
+                    </Stack>
                 </Group>
                 <Stack className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-md p-5 relative" sx={{backgroundColor: "#FFFBFE"}}>
-                    <ActionIcon className="absolute -top-0 -right-0" onClick={() => setEditDetails(true)}>
+                    {editable == false ? <></> : editDetails ? <></> :  
+                    <ActionIcon className="absolute -top-0 -right-0 hover:rounded-full" onClick={() => setEditDetails(true)}>
                         <HiPencil size={20} />
-                    </ActionIcon>
+                    </ActionIcon>}
 
                     <Stack spacing={2} className="border-solid border-gray-600 border-t-0 border-l-0 border-r-0 border-b-2 py-2">
                         <Text className="font-bold text-sm">Driver Name</Text>
@@ -64,50 +113,99 @@ export default function Pon() {
                         setEditableDetails(ponDetails)}}>Cancel</Button>
                     <Button onClick={() => { 
                         setEditDetails(false)
-                        console.log(editableDetails)}}> Submit </Button> </Group> : <></>}
+                        setPonDetails((prev) => { return {...prev, ...editableDetails}})
+                        }}>Submit</Button> </Group> : <></>}
 
                 </Stack>
 
                 <Stack className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-md p-5 my-5 relative" sx={{backgroundColor: "#FFFBFE"}}>
-                    <ActionIcon className="absolute -top-0 -right-0" onClick={() => setEditItems(true)}>
+                    {editable == false ? <></> : editItems ? <></> :
+                    <ActionIcon className="absolute -top-0 -right-0 hover:rounded-full" onClick={() => setEditItems(true)}>
                         <HiPencil size={20}/>
-                    </ActionIcon>
+                    </ActionIcon>}
                     
                     <Text className="font-bold">Items to bring out</Text>
-                    {ponDetails.Items.map((item, index) => (
-                        <Group key={index}>
-                            {editItems ? <><Text>{index+1}.</Text><TextInput value={editableItems[index]} onChange={(event) => {
-                                const newItem = editableItems
-                                newItem[index] = event.currentTarget.value
-                                console.log(newItem)
-                                setEditableItems(newItem)}}></TextInput></> : <Text>{index + 1}. {item}</Text>}
-                        </Group>
-                    ))}
+                    <Stack>
+                    {editableItems.map((item, index) =>                         
+                        editItems ? 
+                            <Group key={index} noWrap className="flex flex-row">
+                                <Text>{index+1}.</Text>
+                                <TextInput value={item} onChange={(event) => {
+                                    const newItem = editableItems
+                                    newItem[index] = event.currentTarget.value
+                                    setEditableItems([...newItem])}}>
+                                </TextInput>
+                                <ActionIcon onClick={() => {
+                                    setEditableItems(editableItems.filter((_, idx) => index != idx))
+                                }}>
+                                    <AiOutlineMinusCircle color='red'/>
+                                </ActionIcon>
+                                {index == editableItems.length - 1 ? 
+                                <ActionIcon className="ml-7 border-3 border-gray-400 border-dotted w-2/5 row-auto" onClick={() => {
+                                    setEditableItems([...editableItems, ''])
+                                }}>
+                                    <HiPlus />
+                                </ActionIcon>
+                                : <></>}
+                            </Group>
+                            : <Text>{index + 1}. {item}</Text>)}
+                    </Stack>
                     {editItems ? 
                         <Group position='right'>
                             <Button onClick={() => {setEditItems(false)
+                            console.log(ponDetails.Items)
                             setEditableItems(ponDetails.Items)}}>Cancel</Button>
                         <Button onClick={() => { 
                             setEditItems(false)
-                            console.log(editableItems)}}> Submit </Button> </Group> : <></>}
+                            setPonDetails((prev) => { return {...prev, Items: editableItems}})
+                            console.log(editableItems)}}>Submit</Button> </Group> : <></>}
                 </Stack>
 
-                <Group className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-md p-5 my-5" sx={{backgroundColor: "#FFFBFE"}}>
-                    <ActionIcon className="absolute -top-0 -right-0" onClick={() => setEditImages(true)}>
+                <Box className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-md p-5 my-5" sx={{backgroundColor: "#FFFBFE"}}>
+                    {editable == false ? <></> : editImages ? <></> : 
+                    <ActionIcon className="absolute -top-0 -right-0 hover:rounded-full" onClick={() => setEditImages(true)}>
                         <HiPencil size={20} />
-                    </ActionIcon>
+                    </ActionIcon>}
                 
                     <Text className="font-bold">Attached Images</Text> 
-                    <Group noWrap={true} spacing="xl" className="overflow-scroll">
-                        {randomImages.map((image, index) => (
-                            <Box key={index} className="w-screen h-screen mx-auto flex">
-                                <BackgroundImage src={image} radius="md"><Grid className="relative"><ActionIcon className="absolute top-full right-0" ><TiDeleteOutline /></ActionIcon></Grid></BackgroundImage>
-                            </Box>
+                    <Group spacing="xl" className="py-5">
+                        {editImages ? <ActionIcon className="border-3 border-dotted border-gray-400" sx={{width: '80px', height: '80px'}}><HiPlus/></ActionIcon> : <></>}
+                        {editedImages.map((image, index) => (
+                            <Image key={index} 
+                                src={image.image} 
+                                alt={image.image.replace('0', '1')} 
+                                radius="md" width={80} height={80}
+                                onClick={() => {
+                                    setEditedImages([...editedImages.map((image, idx) => {
+                                        if (index == idx) {
+                                            image.selected = !image.selected
+                                        }
+                                        return image
+                                    })])
+                                }}
+                                sx={{opacity: image.selected ? 0.7 : 1 }}
+                                className="hover:cursor-pointer hover:opacity-60"
+                                  />
                         ))}
                    </Group>
-                </Group>
-            </Stack>
+                   {editImages ? 
+                   <Group position='right'>
+                       <ActionIcon className="border border-solid border-r-20 rounded-full" sx={{backgroundColor: '#F4EFF4'}}
+                          onClick={() => {
+                            setEditImages(false)
+                            setEditedImages([...ponDetails.Images.map(image => { return {selected: false, image: image}})])}}
+                       ><HiOutlineX /></ActionIcon>
 
+                       <ActionIcon className="border border-solid border-r-20 rounded-full" sx={{backgroundColor: '#F4EFF4'}}
+                          onClick={() => {
+                            setEditImages(false)
+                            setEditedImages((prev) => prev.filter(image => !image.selected))  
+                            setPonDetails((prev) => { return {...prev, Images: editedImages.filter(image => !image.selected).map(image => image.image)}}) 
+                        }}
+                       ><HiOutlineCheck /></ActionIcon>
+                   </Group> : <></>}
+                </Box>
+            </Stack>
         </Box>
     )
 }
