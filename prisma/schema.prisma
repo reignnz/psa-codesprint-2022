@@ -49,22 +49,23 @@ model PON {
   isCompleted        Boolean       @default(false)
   isArchived         Boolean       @default(false)
   signature          Signature?
-  verifiation        Verification?
+  verification       Verification?
   pictures           Picture[]
   issued_at          DateTime      @default(now())
   last_updated_at    DateTime      @updatedAt
   visibilities       Visibility[]
   request            Request       @relation(fields: [requestId], references: [id])
   requestId          Int           @unique
+  status             Status        @default(ISSUED)
 
   @@map("pon")
 }
 
 model Visibility {
   pon    PON  @relation(fields: [ponId], references: [id], onDelete: Cascade)
-  ponId  Int  @unique
+  ponId  Int  
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int  @unique
+  userId Int  
 
   @@id([ponId, userId])
   @@map("visibility")
@@ -104,4 +105,12 @@ enum Role {
   STAFF
   DESIGNATED_OFFICER
   AETOS
+}
+
+enum Status {
+  ISSUED
+  PENDING
+  SIGNED
+  VERIFIED
+  ARCHIVED
 }

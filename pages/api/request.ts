@@ -14,7 +14,7 @@ async function requestRoute(req: NextApiRequest, res: NextApiResponse) {
     data: {
       requestedBy: {
         connect: {
-          
+          id: req.session.user.id,
         },
       },
     },

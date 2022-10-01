@@ -5,7 +5,7 @@ import Link from "next/link";
 import prisma from "../../lib/prisma";
 
 import { useMantineTheme } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
+import { useMediaQuery, useReducedMotion } from "@mantine/hooks";
 import { withIronSessionSsr } from "iron-session/next";
 import { sessionOptions } from "../../lib/session";
 import { PON, User, Request } from "@prisma/client";
@@ -22,53 +22,53 @@ export const getServerSideProps = withIronSessionSsr(
     }
 
     const requests = await prisma.request.findMany({
+      where: { pon: null },
+      include: { requestedBy: true },
+    });
+
+    const user = await prisma.user.findUnique({
       where: {
-        pon: null,
+        id: req.session.user.id,
       },
       include: {
-        requestedBy: true,
+        issuedPons: {
+          where: { issuedById: req.session.user.id },
+          orderBy: { issued_at: "desc" },
+          include: { request: { include: { requestedBy: true } } },
+        },
       },
     });
 
-    const issuedPons = await prisma.pON.findMany({
-      where: {
-        issuedById: req.session.user.id,
-      },
-      orderBy: {
-        issued_at: "desc",
-      },
-      include: {
-        request: {
-            include: {
-                requestedBy: true,
-            }
-        }
-      }
-    });
+    if (!user) {
+      return {
+        notFound: true,
+      };
+    }
 
     return {
       props: {
+        user,
         requests,
-        issuedPons,
       },
     };
   },
   sessionOptions
 );
 
-export default function Dashboard({
-  requests,
-  issuedPons,
-}: {
-  requests: (Request & {
-    requestedBy: User;
-  })[],
-  issuedPons: (PON & {
-    request: Request & {
+export default function Dashboard(props: {
+  user: User & {
+    issuedPons: (PON & {
+      request: Request & {
         requestedBy: User;
-    };
-})[];
+      };
+    })[];
+  };
+  requests: (Request & { requestedBy: User })[];
 }) {
+  const {
+    requests,
+    user: { issuedPons, ...user },
+  } = props;
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
   const isTablet = useMediaQuery(
@@ -106,17 +106,17 @@ export default function Dashboard({
 
   async function issuePon(id: number) {
     const result = await fetch("/api/issue", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            requestId: id,
-        }),
-    })
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        requestId: id,
+      }),
+    });
 
     if (result.ok) {
-        location.reload();
+      location.reload();
     }
   }
 
@@ -126,21 +126,22 @@ export default function Dashboard({
         <Group position="apart">
           <Stack spacing={2}>
             <Text className="font-bold text-3xl"> Hello </Text>
-            <Text className="font-bold text-3xl"> Yu Dong! </Text>
+            <Text className="font-bold text-3xl"> {user.firstName} </Text>
           </Stack>
 
           <HiUserCircle size={50} className="w-20" />
         </Group>
 
         <Text className="text-3xl font-bold pt-4">Pending: </Text>
-        {requests.map((request, index) => (
-          <Box key={request.requestedBy.username} onClick={
-            async () => {
-                if (confirm(`Issue PON for request #${request.id}?`)) {
-                    issuePon(request.id);
-                }
-            }
-          } >
+        {requests?.map((request, index) => (
+          <Box
+            key={request.requestedBy.username}
+            onClick={async () => {
+              if (confirm(`Issue PON for request #${request.id}?`)) {
+                issuePon(request.id);
+              }
+            }}
+          >
             <Group
               position="apart"
               className=" rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150"
@@ -171,8 +172,8 @@ export default function Dashboard({
         <hr className="my-8 h-px bg-gray-200 border-1 dark:bg-gray-700" />
 
         <Text className="text-3xl font-bold pt-4">Recently Issued: </Text>
-        {issuedPons.map((pon, index) => (
-          <Link key={pon.id} href="/pon" passHref>
+        {issuedPons?.map((pon, index) => (
+          <Link key={pon.id} href={`/pon/${pon.id}`} passHref>
             <Group
               position="apart"
               className=" rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150"
@@ -188,7 +189,11 @@ export default function Dashboard({
                 <Group spacing={4}>
                   <Text>Status: </Text>
                   <Text sx={{ color: statusToColor["ISSUED"] }}>
-                    {pon.isArchived ? "ARCHIVED" : pon.isCompleted ? "COMPLETED" : "ISSUED"}
+                    {pon.isArchived
+                      ? "ARCHIVED"
+                      : pon.isCompleted
+                      ? "COMPLETED"
+                      : "ISSUED"}
                   </Text>
                 </Group>
               </Stack>
