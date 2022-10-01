@@ -20,7 +20,7 @@ model User {
   designatedOfficer DesignatedOfficer?
   aetos             Aetos?
   admin             Admin?
-  request           Request[]
+  requests          Request[]
 
   @@map("users")
 }
