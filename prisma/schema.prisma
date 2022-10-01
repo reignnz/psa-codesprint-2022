@@ -20,6 +20,7 @@ model User {
   designatedOfficer DesignatedOfficer?
   aetos             Aetos?
   admin             Admin?
+  request           Request[]
 
   @@map("users")
 }
@@ -56,6 +57,17 @@ model Admin {
   @@map("admins")
 }
 
+model Request {
+  id           Int      @id @default(autoincrement())
+  pon          PON      @relation(fields: [ponId], references: [id], onDelete: Cascade)
+  ponId        Int      @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int      @unique
+  submitted_at DateTime @default(now())
+
+  @@map("requests")
+}
+
 model PON {
   id                 Int               @id @default(autoincrement())
   requestor          Staff             @relation(fields: [requestorId], references: [userId], onDelete: Cascade)
@@ -72,31 +84,39 @@ model PON {
   signature          Signature?
   verifiation        Verification?
   pictures           Picture[]
+  request            Request?
+  issued_at          DateTime          @default(now())
+  last_updated_at    DateTime          @updatedAt
 
   @@map("pon")
 }
 
 model Picture {
-  id      String @id @default(uuid())
-  content Bytes
-  pon     PON    @relation(fields: [ponId], references: [id], onDelete: Cascade)
-  ponId   Int
+  id          String   @id @default(uuid())
+  content     Bytes
+  pon         PON      @relation(fields: [ponId], references: [id], onDelete: Cascade)
+  ponId       Int
+  uploaded_at DateTime @default(now())
+
+  @@map("pictures")
 }
 
 model Signature {
-  pon    PON   @relation(fields: [ponId], references: [id], onDelete: Cascade)
-  ponId  Int   @unique
-  user   Staff @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  userId Int   @unique
+  pon       PON      @relation(fields: [ponId], references: [id], onDelete: Cascade)
+  ponId     Int      @unique
+  user      Staff    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId    Int      @unique
+  signed_at DateTime @default(now())
 
   @@map("signatures")
 }
 
 model Verification {
-  pon    PON   @relation(fields: [ponId], references: [id], onDelete: Cascade)
-  ponId  Int   @unique
-  user   Aetos @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  userId Int   @unique
+  pon         PON      @relation(fields: [ponId], references: [id], onDelete: Cascade)
+  ponId       Int      @unique
+  user        Aetos    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId      Int      @unique
+  verified_at DateTime @default(now())
 
   @@map("verifications")
 }
