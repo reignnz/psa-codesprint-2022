@@ -30,10 +30,10 @@ model User {
 
 model Request {
   id            Int      @id @default(autoincrement())
-  pon           PON      @relation(fields: [ponId], references: [id], onDelete: Cascade)
-  ponId         Int      @unique
+  pon           PON?     @relation(fields: [ponId], references: [id], onDelete: Cascade)
+  ponId         Int?     @unique
   requestedBy   User     @relation(fields: [requestedById], references: [id], onDelete: Cascade)
-  requestedById Int      @unique
+  requestedById Int
   submitted_at  DateTime @default(now())
 
   @@map("requests")
