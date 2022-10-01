@@ -17,6 +17,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { withIronSessionSsr } from "iron-session/next";
 import { Picture, PON, Signature, Verification } from "@prisma/client";
 import { sessionOptions } from "../../lib/session";
+import { MdLocationSearching } from "react-icons/md";
 
 interface PonProps {
   editable: boolean;
@@ -24,7 +25,6 @@ interface PonProps {
 
 export const getServerSideProps = withIronSessionSsr(
   async ({ req, params }) => {
-    console.log(req.session.user.id);
     const pon = await prisma.pON.findFirst({
       where: {
         OR: [
@@ -51,7 +51,9 @@ export const getServerSideProps = withIronSessionSsr(
     return {
       props: {
         pon,
-        editable: pon.request.requestedById === req.session.user.id && pon.status === "ISSUED",
+        editable:
+          pon.request.requestedById === req.session.user.id &&
+          pon.status === "ISSUED",
       },
     };
   },
@@ -76,11 +78,12 @@ export default function Pon({
   );
 
   const [ponDetails, setPonDetails] = useState({
-    DriverName: pon.driver_name,
-    DriverPsaPass: pon.driver_pass_number,
-    VehicleNumber: pon.vehicle_number,
-    Items: pon.item_descriptions,
-    Images: pon.pictures.map((picture) => picture.id),
+    company_name: pon.company_name,
+    driver_name: pon.driver_name,
+    driver_pass_number: pon.driver_pass_number,
+    vehicle_number: pon.vehicle_number,
+    items: pon.item_descriptions.length ? pon.item_descriptions : [""],
+    images: pon.pictures.map((picture) => picture.id),
   });
 
   const [editDetails, setEditDetails] = useState(false);
@@ -89,20 +92,66 @@ export default function Pon({
   const [editName, setEditName] = useState(false);
 
   const [editableDetails, setEditableDetails] = useState({
-    DriverName: ponDetails.DriverName,
-    DriverPsaPass: ponDetails.DriverPsaPass,
-    VehicleNumber: ponDetails.VehicleNumber,
+    driver_name: ponDetails.driver_name,
+    driver_pass_number: ponDetails.driver_pass_number,
+    vehicle_number: ponDetails.vehicle_number,
   });
 
-  const [editableItems, setEditableItems] = useState([...ponDetails.Items]);
+  const [editableItems, setEditableItems] = useState([...ponDetails.items]);
 
   const [editedImages, setEditedImages] = useState(
-    ponDetails.Images.map((image) => {
+    ponDetails.images.map((image) => {
       return { selected: false, image };
     })
   );
 
-  const [editCompanyName, setEditCompanyName] = useState("ABC Company");
+  const [editCompanyName, setEditCompanyName] = useState(ponDetails.company_name);
+
+  async function submitDetails() {
+    const result = await fetch(`/api/pon/${pon.id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(editableDetails),
+    });
+    if (!result) {
+      location.reload();
+    }
+  }
+  async function submitItems() {
+    const result = await fetch(`/api/pon/${pon.id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(editableItems),
+    });
+    if (!result) {
+      location.reload();
+    }
+  }
+  async function submitImages() {
+    const result = await fetch(`/api/pon/${pon.id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(editedImages),
+    });
+    if (!result) {
+      location.reload();
+    }
+  }
+  async function submitCompany() {
+    await fetch(`/api/pon/${pon.id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ company_name: editCompanyName }),
+    });
+  }
 
   function random_rgba() {
     var o = Math.round,
@@ -147,9 +196,10 @@ export default function Pon({
                 {editName ? (
                   <TextInput
                     value={editCompanyName}
-                    onChange={(event) =>
-                      setEditCompanyName(event.currentTarget.value)
-                    }
+                    onChange={(event) => {
+                      setEditCompanyName(event.currentTarget.value);
+                      submitCompany();
+                    }}
                   />
                 ) : (
                   <Text>{editCompanyName}</Text>
@@ -181,7 +231,7 @@ export default function Pon({
               className="sm:text-md md:text-lg lg:text-3xl"
               sx={{ color: random_rgba() }}
             >
-              #12345
+              #{pon.id}
             </Text>
             <Group spacing={2} className="sm:text-sm md:text-sm lg:text-lg">
               <Text>STATUS:</Text>
@@ -220,16 +270,16 @@ export default function Pon({
             <Text className="font-bold text-sm">Driver Name</Text>
             {editDetails ? (
               <TextInput
-                value={editableDetails.DriverName ?? ""}
+                value={editableDetails.driver_name ?? ""}
                 onChange={(event) =>
                   setEditableDetails({
                     ...editableDetails,
-                    DriverName: event.currentTarget.value,
+                    driver_name: event.currentTarget.value,
                   })
                 }
               />
             ) : (
-              <Text>{ponDetails.DriverName}</Text>
+              <Text>{ponDetails.driver_name}</Text>
             )}
           </Stack>
 
@@ -240,16 +290,16 @@ export default function Pon({
             <Text className="font-bold text-sm">Driver PSA Pass</Text>
             {editDetails ? (
               <TextInput
-                value={editableDetails.DriverPsaPass ?? ""}
+                value={editableDetails.driver_pass_number ?? ""}
                 onChange={(event) =>
                   setEditableDetails({
                     ...editableDetails,
-                    DriverPsaPass: event.currentTarget.value,
+                    driver_pass_number: event.currentTarget.value,
                   })
                 }
               />
             ) : (
-              <Text>{ponDetails.DriverPsaPass}</Text>
+              <Text>{ponDetails.driver_pass_number}</Text>
             )}
           </Stack>
 
@@ -260,16 +310,16 @@ export default function Pon({
             <Text className="font-bold text-sm">Vehicle Number</Text>
             {editDetails ? (
               <TextInput
-                value={editableDetails.VehicleNumber ?? ""}
+                value={editableDetails.vehicle_number ?? ""}
                 onChange={(event) =>
                   setEditableDetails({
                     ...editableDetails,
-                    VehicleNumber: event.currentTarget.value,
+                    vehicle_number: event.currentTarget.value,
                   })
                 }
               />
             ) : (
-              <Text>{ponDetails.VehicleNumber}</Text>
+              <Text>{ponDetails.vehicle_number}</Text>
             )}
           </Stack>
 
@@ -284,11 +334,12 @@ export default function Pon({
                 Cancel
               </Button>
               <Button
-                onClick={() => {
+                onClick={async () => {
                   setEditDetails(false);
                   setPonDetails((prev) => {
                     return { ...prev, ...editableDetails };
                   });
+                  await submitDetails();
                 }}
               >
                 Submit
@@ -364,8 +415,7 @@ export default function Pon({
               <Button
                 onClick={() => {
                   setEditItems(false);
-                  console.log(ponDetails.Items);
-                  setEditableItems(ponDetails.Items);
+                  setEditableItems(ponDetails.items);
                 }}
               >
                 Cancel
@@ -374,9 +424,10 @@ export default function Pon({
                 onClick={() => {
                   setEditItems(false);
                   setPonDetails((prev) => {
-                    return { ...prev, Items: editableItems };
+                    return { ...prev, items: editableItems };
                   });
-                  console.log(editableItems);
+                  setEditableItems(editableItems.filter(i => i));
+                  submitItems();
                 }}
               >
                 Submit
@@ -447,7 +498,7 @@ export default function Pon({
                 onClick={() => {
                   setEditImages(false);
                   setEditedImages([
-                    ...ponDetails.Images.map((image) => {
+                    ...ponDetails.images.map((image) => {
                       return { selected: false, image: image };
                     }),
                   ]);
@@ -467,11 +518,12 @@ export default function Pon({
                   setPonDetails((prev) => {
                     return {
                       ...prev,
-                      Images: editedImages
+                      images: editedImages
                         .filter((image) => !image.selected)
                         .map((image) => image.image),
                     };
                   });
+                  submitImages();
                 }}
               >
                 <HiOutlineCheck />
