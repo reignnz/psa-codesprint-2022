@@ -59,20 +59,20 @@ export default function Pon({ editable } : PonProps) {
     return (
         <Box className="flex relative items-center justify-center py-20">
             <Stack sx={{width: isMobile ? '280px' : '600px'}}>
-                <Group position={isMobile ? `center` : `apart`} noWrap className="font-bold" sx={{width: isMobile ? '200px' : '600px'}}>
+                <Group position="apart" noWrap className="mx-auto" sx={{width: isMobile ? '270px' : '600px'}}>
                     <Stack spacing={1} >
-                        <Text className="text-lg"> PON </Text>
+                        <Text className="sm:text-md lg:text-lg font-bold"> PON </Text>
                         {editable == false ? <></> :
-                        <Group className="text-lg">
+                        <Group noWrap className="sm:text-sm lg:text-lg flex relative" spacing={0}>
                             {editName ? <TextInput value={editCompanyName} 
                                 onChange={(event) => setEditCompanyName(event.currentTarget.value)}/>
                                 :<Text>{editCompanyName}</Text>}
                             {editName ? 
-                            <ActionIcon className="hover:rounded-full" onClick={() => setEditName(false)}>
-                                <HiOutlineX size={15}/>
+                            <ActionIcon className="hover:rounded-full align-baseline" onClick={() => setEditName(false)}>
+                                <HiOutlineCheck size={15}/>
                             </ActionIcon>
                             : 
-                            <ActionIcon className="hover:rounded-full" onClick={() => setEditName(true)}>
+                            <ActionIcon className="hover:rounded-full align-baseline" onClick={() => setEditName(true)}>
                                 <HiPencil size={15}/>
                             </ActionIcon>}
                         </Group> }
