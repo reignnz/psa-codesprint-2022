@@ -1,12 +1,14 @@
-import { Box, Stack, Text, Group, ActionIcon } from "@mantine/core";
+import { Box, Stack, Text, Group, ActionIcon, Button } from "@mantine/core";
 import { HiUserCircle } from "react-icons/hi";
 import { MdArrowForwardIos } from "react-icons/md";
 import Link from "next/link";
+import prisma from "../lib/prisma"
 
 import { useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { sessionOptions } from "../lib/session";
 import { withIronSessionSsr } from "iron-session/next";
+import { User } from "@prisma/client";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -18,9 +20,20 @@ export const getServerSideProps = withIronSessionSsr(
         },
       };
     } else {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: req.session.user.id,
+        },
+        include: {
+          requests: {
+            where: { ponId: null },
+          },
+        },
+      });
+      console.log(user);
       return {
         props: {
-          firstName: req.session.user.firstName,
+          ...user,
         },
       };
     }
@@ -28,7 +41,7 @@ export const getServerSideProps = withIronSessionSsr(
   sessionOptions
 );
 
-export default function Dashboard({ firstName }: { firstName: string }) {
+export default function Dashboard(user: (User & { requests: Request[] }) | null) {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
   const isTablet = useMediaQuery(
@@ -68,7 +81,7 @@ export default function Dashboard({ firstName }: { firstName: string }) {
         <Group position="apart">
           <Stack spacing={2}>
             <Text className="font-bold text-3xl"> Hello, </Text>
-            <Text className="font-bold"> {firstName}! </Text>
+            <Text className="font-bold"> {user?.firstName}! </Text>
           </Stack>
 
           <HiUserCircle size={50} className="w-20" />
@@ -98,6 +111,20 @@ export default function Dashboard({ firstName }: { firstName: string }) {
             </Link>
           </Group>
         ))}
+
+        <Button
+          onClick={async () => {
+            const result = await fetch("/api/request", {
+              method: "post",
+            });
+
+            if (result.ok) {
+              location.reload();
+            }
+          }}
+        >
+          Request{user?.requests.length ? ` (${user?.requests.length})` : ""}
+        </Button>
       </Stack>
     </Box>
   );
