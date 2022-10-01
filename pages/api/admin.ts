@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import zxcvbn from "zxcvbn";
 import hashPassword from "../../lib/hash";
+import validatePassword from "../../lib/password_check";
 
 export default async function handler(
   req: NextApiRequest,
@@ -32,7 +33,7 @@ export default async function handler(
         .json({ message: "First and last name are required" });
     }
 
-    if (zxcvbn(password).score < 3) {
+    if (!validatePassword(password)) {
       return res.status(400).json({
         message:
           "Password is too weak. Please use a stronger password with at least 3 of the following: uppercase, lowercase, numbers, and symbols",
