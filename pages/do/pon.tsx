@@ -1,4 +1,4 @@
-import Pon from '../pon'
+import Pon from '../pon/[id]'
 import { Stack, Group, Text } from '@mantine/core'
 import { HiOutlineCheck, HiOutlineX } from 'react-icons/hi'
 import { TiArrowBackOutline } from 'react-icons/ti'

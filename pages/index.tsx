@@ -8,7 +8,7 @@ import { useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { sessionOptions } from "../lib/session";
 import { withIronSessionSsr } from "iron-session/next";
-import { User } from "@prisma/client";
+import { PON, User } from "@prisma/client";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -19,6 +19,13 @@ export const getServerSideProps = withIronSessionSsr(
           permanent: false,
         },
       };
+    } else if (req.session.user.role === "DESIGNATED_OFFICER") {
+      return {
+        redirect: {
+          destination: "/do",
+          permanent: false,
+        },
+      };
     } else {
       const user = await prisma.user.findUnique({
         where: {
@@ -26,10 +33,20 @@ export const getServerSideProps = withIronSessionSsr(
         },
         include: {
           requests: {
-            where: { pon: null },
+            include: {
+              pon: true,
+            }
           },
         },
       });
+      if (user == null) {
+        return {
+          redirect: {
+            destination: "/api/logout",
+            permanent: false,
+          },
+        };
+      }
       return {
         props: {
           ...user,
@@ -40,7 +57,7 @@ export const getServerSideProps = withIronSessionSsr(
   sessionOptions
 );
 
-export default function Dashboard(user: (User & { requests: Request[] }) | null) {
+export default function Dashboard(user: (User & { requests: (Request & { pon: PON | null;})[] })) {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
   const isTablet = useMediaQuery(
@@ -50,12 +67,6 @@ export default function Dashboard(user: (User & { requests: Request[] }) | null)
     `(min-width: ${theme.breakpoints.md}px) and (max-width: ${theme.breakpoints.lg}px)`
   );
   const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.lg}px)`);
-
-  const pons = [
-    { ponId: "1234", Date: "2018-10-10", Status: "Open" },
-    { ponId: "1111", Date: "2019-10-10", Status: "Closed" },
-    { ponId: "1222", Date: "2020-10-10", Status: "In Progress" },
-  ];
 
   function random_rgba() {
     var o = Math.round,
@@ -74,6 +85,9 @@ export default function Dashboard(user: (User & { requests: Request[] }) | null)
     );
   }
 
+  const unissuedRequests = user?.requests.filter((request) => request.pon === null);
+  const issuedPons = user?.requests.filter((request) => request.pon !== null).map((request) => request.pon);
+
   return (
     <Box className="flex relative items-center justify-center py-20">
       <Stack sx={{ width: isMobile ? "280px" : "450px" }}>
@@ -86,24 +100,24 @@ export default function Dashboard(user: (User & { requests: Request[] }) | null)
           <HiUserCircle size={50} className="w-20" />
         </Group>
 
-        {pons.map((pon, index) => (
+        {issuedPons.map((pon, index) => (
           <Group
-            key={pon.ponId}
+            key={pon?.id}
             position="apart"
             className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150"
             sx={{ backgroundColor: "#FFFBFE" }}
           >
             <Stack spacing={1} className="font-bold">
               <Text>PON</Text>
-              <Text sx={{ color: random_rgba() }}>#{pon.ponId}</Text>
+              <Text sx={{ color: random_rgba() }}>#{pon?.id}</Text>
             </Stack>
 
             <Stack spacing={1}>
-              <Text>Date: {pon.Date}</Text>
-              <Text>Status: {pon.Status}</Text>
+              <Text>Date: {pon?.issued_at.toDateString()}</Text>
+              <Text>Status: {pon?.isArchived ? "ARCHIVED" : pon?.isCompleted ? "COMPLETED" : "ISSUED"}</Text>
             </Stack>
 
-            <Link href="/pon" passHref>
+            <Link href={`/pon/${pon?.id}`} passHref>
               <ActionIcon>
                 <MdArrowForwardIos />
               </ActionIcon>
@@ -122,7 +136,7 @@ export default function Dashboard(user: (User & { requests: Request[] }) | null)
             }
           }}
         >
-          Request{user?.requests?.length ? ` (${user?.requests.length})` : ""}
+          Request{unissuedRequests?.length ? ` (${unissuedRequests?.length})` : ""}
         </Button>
       </Stack>
     </Box>

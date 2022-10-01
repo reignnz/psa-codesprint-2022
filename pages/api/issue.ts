@@ -18,11 +18,7 @@ async function issueRoute(req: NextApiRequest, res: NextApiResponse) {
         id: requestId,
       },
       data: {
-        pon: {
-          create: {
-            issuedBy: { connect: { id: req.session.user.id } },
-          },
-        },
+        pon: { create: { issuedBy: { connect: { id: req.session.user.id } } } },
       },
     });
     return res.status(200).send("PON issued successfully");
