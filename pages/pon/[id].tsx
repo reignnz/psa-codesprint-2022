@@ -18,6 +18,7 @@ import { withIronSessionSsr } from "iron-session/next";
 import { Picture, PON, Signature, Verification } from "@prisma/client";
 import { sessionOptions } from "../../lib/session";
 import { MdLocationSearching } from "react-icons/md";
+import { mapToHsl } from "../../lib/color";
 
 interface PonProps {
   editable: boolean;
@@ -153,23 +154,6 @@ export default function Pon({
     });
   }
 
-  function random_rgba() {
-    var o = Math.round,
-      r = Math.random,
-      s = 255;
-    return (
-      "rgba(" +
-      o(r() * s) +
-      "," +
-      o(r() * s) +
-      "," +
-      o(r() * s) +
-      "," +
-      r().toFixed(1) +
-      ")"
-    );
-  }
-
   const statusToColor = new Map([
     ["REQUESTED", "#0E80EACC"],
     ["ISSUED", "#430198CC"],
@@ -209,7 +193,7 @@ export default function Pon({
                     className="hover:rounded-full"
                     onClick={() => setEditName(false)}
                   >
-                    <HiOutlineX size={15} />
+                    <HiOutlineCheck size={15} />
                   </ActionIcon>
                 ) : (
                   <ActionIcon
@@ -229,7 +213,7 @@ export default function Pon({
           >
             <Text
               className="sm:text-md md:text-lg lg:text-3xl"
-              sx={{ color: random_rgba() }}
+              sx={{ color: mapToHsl(pon.id) }}
             >
               #{pon.id}
             </Text>

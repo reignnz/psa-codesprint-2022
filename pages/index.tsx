@@ -9,6 +9,8 @@ import { useMediaQuery } from "@mantine/hooks";
 import { sessionOptions } from "../lib/session";
 import { withIronSessionSsr } from "iron-session/next";
 import { PON, User } from "@prisma/client";
+import { createHash } from "crypto";
+import { mapToHsl } from "../lib/color";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -68,23 +70,6 @@ export default function Dashboard(user: (User & { requests: (Request & { pon: PO
   );
   const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.lg}px)`);
 
-  function random_rgba() {
-    var o = Math.round,
-      r = Math.random,
-      s = 255;
-    return (
-      "rgba(" +
-      o(r() * s) +
-      "," +
-      o(r() * s) +
-      "," +
-      o(r() * s) +
-      "," +
-      r().toFixed(1) +
-      ")"
-    );
-  }
-
   const unissuedRequests = user?.requests.filter((request) => request.pon === null);
   const issuedPons = user?.requests.filter((request) => request.pon !== null).map((request) => request.pon);
 
@@ -109,7 +94,7 @@ export default function Dashboard(user: (User & { requests: (Request & { pon: PO
           >
             <Stack spacing={1} className="font-bold">
               <Text>PON</Text>
-              <Text sx={{ color: random_rgba() }}>#{pon?.id}</Text>
+              <Text sx={{ color: mapToHsl(pon?.id ?? 0) }}>#{pon?.id}</Text>
             </Stack>
 
             <Stack spacing={1}>
