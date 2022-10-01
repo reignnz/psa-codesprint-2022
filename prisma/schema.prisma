@@ -11,92 +11,100 @@ datasource db {
 }
 
 model User {
-  id                 Int                 @id @default(autoincrement())
-  username           String              @unique
-  password_hash      String
-  staffs             Staff[]
-  firstName          String
-  lastName           String
-  designatedOfficers DesignatedOfficer[]
-  aetoes             Aetos[]
-  admins             Admin[]
+  id              Int            @id @default(autoincrement())
+  username        String         @unique
+  password_hash   String
+  firstName       String
+  lastName        String
+  requests        Request[]
+  visibilities    Visibility[]
+  isAdmin         Boolean        @default(false)
+  requestedPons   PON[]          @relation(name: "requestedPons")
+  issuedPons      PON[]          @relation(name: "issuedPons")
+  signatures      Signature[]
+  verififications Verification[]
+  role            Role
 
   @@map("users")
 }
 
-model Staff {
-  user          User        @relation(fields: [userId], references: [id])
-  userId        Int         @unique
-  requestedPons PON[]
-  signatures    Signature[]
+model Request {
+  id            Int      @id @default(autoincrement())
+  pon           PON?     @relation(fields: [ponId], references: [id], onDelete: Cascade)
+  ponId         Int?     @unique
+  requestedBy   User     @relation(fields: [requestedById], references: [id], onDelete: Cascade)
+  requestedById Int
+  submitted_at  DateTime @default(now())
 
-  @@map("staff")
-}
-
-model DesignatedOfficer {
-  user       User  @relation(fields: [userId], references: [id])
-  userId     Int   @unique
-  issuedPons PON[]
-
-  @@map("designated_officers")
-}
-
-model Aetos {
-  user         User           @relation(fields: [userId], references: [id])
-  userId       Int            @unique
-  verfications Verification[]
-
-  @@map("aetos")
-}
-
-model Admin {
-  user   User @relation(fields: [userId], references: [id])
-  userId Int  @unique
-
-  @@map("admins")
+  @@map("requests")
 }
 
 model PON {
-  id                 Int               @id @default(autoincrement())
-  requestor          Staff             @relation(fields: [requestorId], references: [userId])
-  requestorId        Int               @unique
-  issuer             DesignatedOfficer @relation(fields: [issuerId], references: [userId])
-  issuerId           Int               @unique
-  company_name       String
-  vehicle_number     String
-  driver_name        String
-  driver_pass_number String
-  item_description   String
-  isCompleted        Boolean           @default(false)
-  isArchived         Boolean           @default(false)
+  id                 Int           @id @default(autoincrement())
+  requestedBy        User          @relation(fields: [requestedById], references: [id], onDelete: Cascade, name: "requestedPons")
+  requestedById      Int           @unique
+  issuedBy           User          @relation(fields: [issuedById], references: [id], onDelete: Cascade, name: "issuedPons")
+  issuedById         Int           @unique
+  company_name       String?
+  vehicle_number     String?
+  driver_name        String?
+  driver_pass_number String?
+  item_descriptions  String[]
+  isCompleted        Boolean       @default(false)
+  isArchived         Boolean       @default(false)
   signature          Signature?
   verifiation        Verification?
   pictures           Picture[]
+  request            Request?
+  issued_at          DateTime      @default(now())
+  last_updated_at    DateTime      @updatedAt
+  visibilities       Visibility[]
 
   @@map("pon")
 }
 
+model Visibility {
+  pon    PON  @relation(fields: [ponId], references: [id], onDelete: Cascade)
+  ponId  Int  @unique
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @unique
+
+  @@id([ponId, userId])
+  @@map("visibility")
+}
+
 model Picture {
-  id      String @id @default(uuid())
-  content Bytes
-  pon     PON    @relation(fields: [ponId], references: [id])
-  ponId   Int
+  id          String   @id @default(uuid())
+  content     Bytes
+  pon         PON      @relation(fields: [ponId], references: [id], onDelete: Cascade)
+  ponId       Int
+  uploaded_at DateTime @default(now())
+
+  @@map("pictures")
 }
 
 model Signature {
-  pon    PON   @relation(fields: [ponId], references: [id])
-  ponId  Int   @unique
-  user   Staff @relation(fields: [userId], references: [userId])
-  userId Int   @unique
+  pon        PON      @relation(fields: [ponId], references: [id], onDelete: Cascade)
+  ponId      Int      @unique
+  signedBy   User     @relation(fields: [signedById], references: [id], onDelete: Cascade)
+  signedById Int      @unique
+  signed_at  DateTime @default(now())
 
   @@map("signatures")
 }
 
 model Verification {
-  pon    PON   @relation(fields: [ponId], references: [id])
-  ponId  Int   @unique
-  user   Aetos @relation(fields: [userId], references: [userId])
-  userId Int   @unique
+  pon          PON      @relation(fields: [ponId], references: [id], onDelete: Cascade)
+  ponId        Int      @unique
+  verifiedBy   User     @relation(fields: [verifiedById], references: [id], onDelete: Cascade)
+  verifiedById Int      @unique
+  verified_at  DateTime @default(now())
 
   @@map("verifications")
+}
+
+enum Role {
+  STAFF
+  DESIGNATED_OFFICER
+  AETOS
 }
