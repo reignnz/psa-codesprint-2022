@@ -150,7 +150,7 @@ export default function Dashboard(props: {
           >
             <Group
               position="apart"
-              className=" rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150"
+              className="rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150"
               sx={{ backgroundColor: "#FFFBFE" }}
             >
               <Stack spacing={1} className="font-bold">

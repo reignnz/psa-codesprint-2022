@@ -180,7 +180,7 @@ function PonRow({ pon }: { pon: PON }) {
     <Group
       key={pon?.id}
       position="apart"
-      className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150"
+      className="rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150"
       sx={{ backgroundColor: "#FFFBFE" }}
     >
       <Stack spacing={1} className="font-bold">
