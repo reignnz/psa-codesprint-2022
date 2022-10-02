@@ -130,7 +130,7 @@ export default function Dashboard(
 
         {
           issuedPons.length > 0 && <>
-              <h2>Your PONs</h2>
+              <Text className="text-4xl font-bold mt-6">Your PONs</Text>
             {issuedPons.map((pon, index) => (
               <PonRow pon={pon!} key={index} />
             ))}
