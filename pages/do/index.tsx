@@ -12,7 +12,11 @@ import { PON, User, Request } from "@prisma/client";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
-    if (req.session.user.role !== "DESIGNATED_OFFICER") {
+    if (
+      (await prisma.user.count({
+        where: { id: req.session.id, role: "DESIGNATED_OFFICER" },
+      })) === 0
+    ) {
       return {
         redirect: {
           destination: "/",
@@ -28,11 +32,11 @@ export const getServerSideProps = withIronSessionSsr(
 
     const user = await prisma.user.findUnique({
       where: {
-        id: req.session.user.id,
+        id: req.session.id,
       },
       include: {
         issuedPons: {
-          where: { issuedById: req.session.user.id },
+          where: { issuedById: req.session.id },
           orderBy: { issued_at: "desc" },
           include: { request: { include: { requestedBy: true } } },
         },

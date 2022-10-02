@@ -20,7 +20,7 @@ async function updateRoute(req: NextApiRequest, res: NextApiResponse) {
 
   const oldPasswordHash = await prisma.user.findUnique({
     where: {
-      id: req.session.user.id,
+      id: req.session.id,
     },
     select: {
       password_hash: true,
@@ -33,7 +33,7 @@ async function updateRoute(req: NextApiRequest, res: NextApiResponse) {
 
   await prisma.user.update({
     where: {
-      id: req.session.user.id,
+      id: req.session.id,
     },
     data: {
       password_hash: hashPassword(newPassword),

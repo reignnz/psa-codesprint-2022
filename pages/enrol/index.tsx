@@ -21,7 +21,7 @@ import { RiShieldCrossLine } from 'react-icons/ri'
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
-    if (!req.session.user?.isAdmin) {
+    if (await prisma.user.count({where: {id: req.session.id, isAdmin: true}}) === 0) {
       return {
         notFound: true,
       };

@@ -32,9 +32,9 @@ export const getServerSideProps = withIronSessionSsr(
     const pon = await prisma.pON.findFirst({
       where: {
         OR: [
-          { visibilities: { some: { user: { id: req.session.user.id } } } },
-          { request: { requestedById: req.session.user.id } },
-          { issuedById: req.session.user.id },
+          { visibilities: { some: { user: { id: req.session.id } } } },
+          { request: { requestedById: req.session.id } },
+          { issuedById: req.session.id },
         ],
         id: parseInt(params?.id as string, 10),
       },
@@ -56,7 +56,7 @@ export const getServerSideProps = withIronSessionSsr(
       props: {
         pon,
         editable:
-          pon.request.requestedById === req.session.user.id &&
+          pon.request.requestedById === req.session.id &&
           pon.status === "ISSUED",
       },
     };

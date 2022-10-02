@@ -6,7 +6,11 @@ import prisma from "../../lib/prisma";
 export default withIronSessionApiRoute(requestRoute, sessionOptions);
 
 async function requestRoute(req: NextApiRequest, res: NextApiResponse) {
-  if (req.session.user.role !== "STAFF") {
+  if (
+    (await prisma.user.count({
+      where: { id: req.session.id, role: "STAFF" },
+    })) === 0
+  ) {
     return res.status(401).send("Unauthorized");
   }
 
@@ -14,7 +18,7 @@ async function requestRoute(req: NextApiRequest, res: NextApiResponse) {
     data: {
       requestedBy: {
         connect: {
-          id: req.session.user.id,
+          id: req.session.id,
         },
       },
     },

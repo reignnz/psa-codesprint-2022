@@ -27,7 +27,7 @@ export declare type FormData = {
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
-    if (req.session.user) {
+    if (req.session.id) {
       return {
         redirect: {
           destination: "/",
@@ -66,7 +66,6 @@ export default function LoginPage() {
   });
 
   async function submitForm(values: FormData) {
-    console.log(values)
     const result = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

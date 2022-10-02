@@ -6,7 +6,7 @@ import { sessionOptions } from "../../lib/session";
 export default withIronSessionApiRoute(issueRoute, sessionOptions);
 
 async function issueRoute(req: NextApiRequest, res: NextApiResponse) {
-  if (req.session.user.role !== "DESIGNATED_OFFICER") {
+  if (!prisma.user.count({where: {id: req.session.id, role: "DESIGNATED_OFFICER"}})) {
     return res.status(401).send("Unauthorized");
   }
 
@@ -18,12 +18,11 @@ async function issueRoute(req: NextApiRequest, res: NextApiResponse) {
         id: requestId,
       },
       data: {
-        pon: { create: { issuedBy: { connect: { id: req.session.user.id } } } },
+        pon: { create: { issuedBy: { connect: { id: req.session.id } } } },
       },
     });
     return res.status(200).send("PON issued successfully");
   } catch (e) {
-    console.log(e);
     return res.status(400).send("Unable to issue PON");
   }
 }
