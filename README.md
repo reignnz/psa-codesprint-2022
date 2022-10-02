@@ -1,9 +1,16 @@
 <img src="public/logo.svg">
 
+# PSAccess :mag:
 
-# LongKenKaiMy PSA Code Sprint :runner:
+## About :blue_book:
 
-This is the repository for the LongKenKaiMy PSA Code Sprint. The code sprint is a 2-day event where participants will work on a project of their choice. The project can be anything from a simple script to a full-fledged application. Our goal is to have fun and learn something new.
+PSAccess is an all inclusive one-stop mobile-optimized web portal for the digitizing of Pass Out Notes (PONs). PSA uses PONs to manage the outflow of items such as spare parts, scrap material disposal, etc. For each PON, 3 printed hard copies are required and this results in **large amounts of waste and significant carbon footprint**. PSAccess aims to reduce this wastage and streamline the item outflow process by digitizing PONs, keeping everything in the cloud. This brings the following benefits:
+
+1. Reduction in paper usage
+1. Increased convenience
+1. Heightened security (strict permissions imposed prevents unauthorized access)
+1. Speed up the overall PON process
+1. Reduce physical storage required for archiving and audits
 
 ## Team Members :busts_in_silhouette:
 
