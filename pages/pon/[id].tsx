@@ -8,9 +8,10 @@ import {
   Text,
   TextInput,
   useMantineTheme,
+  Modal,
 } from "@mantine/core";
 import { useState } from "react";
-import { AiOutlineMinusCircle } from "react-icons/ai";
+import { AiOutlineMinusCircle, AiOutlinePrinter } from "react-icons/ai";
 import { HiPencil, HiPlus, HiOutlineX, HiOutlineCheck } from "react-icons/hi";
 import prisma from "../../lib/prisma";
 import { useMediaQuery } from "@mantine/hooks";
@@ -18,6 +19,8 @@ import { withIronSessionSsr } from "iron-session/next";
 import { Picture, PON, Signature, Verification } from "@prisma/client";
 import { sessionOptions } from "../../lib/session";
 import { MdLocationSearching } from "react-icons/md";
+import { TiArrowBackOutline } from "react-icons/ti";
+import { showNotification } from "@mantine/notifications";
 import { mapToHsl } from "../../lib/color";
 
 interface PonProps {
@@ -162,8 +165,18 @@ export default function Pon({
     ["VERIFIED", "#90730ACC"],
   ]);
 
+  const [shareUserName, setShareUserName] = useState('')
+  const [openModal, setOpenModal] = useState(false)
+  
+
   return (
     <Box className="flex relative items-center justify-center py-20">
+      <Modal opened={openModal} onClose={() => setOpenModal(false)}title="Share with user">
+        <>
+          <TextInput value={shareUserName} placeholder="Enter username" onChange={(event) => setShareUserName(event.currentTarget.value)}/> 
+          <Group position="right" className="mt-2"><Button onClick={() => console.log(shareUserName) }>Share</Button></Group>
+        </>
+      </Modal>
       <Stack sx={{ width: isMobile ? "280px" : "600px" }}>
         <Group
           position= "apart"
@@ -515,9 +528,9 @@ export default function Pon({
             </Group>
           ) : (
             <></>
-          )}
+          )}     
         </Box>
-      </Stack>
+        </Stack>
     </Box>
   );
 }
