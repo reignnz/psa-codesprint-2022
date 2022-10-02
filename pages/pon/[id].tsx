@@ -25,6 +25,7 @@ import {
 } from "../../components/StaffActionChip";
 import { CsoActionChip, CsoActionType } from "../../components/CsoActionChip";
 import { showNotification } from "@mantine/notifications";
+import BackButton from "../../components/BackButton";
 
 interface PonProps {
   editable: boolean;
@@ -217,6 +218,7 @@ export default function Pon({
   
   return (
     <Box className="flex relative items-center justify-center py-20">
+      
       <Modal opened={openModal} onClose={() => setOpenModal(false)} title="Share with user" className="print:hidden">
         <>
           <TextInput
@@ -230,6 +232,7 @@ export default function Pon({
         </>
       </Modal>
       <Stack sx={{ width: isMobile ? "280px" : "600px" }}>
+      <BackButton/>
         <Group
           position="apart"
           noWrap
