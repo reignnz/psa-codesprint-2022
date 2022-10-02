@@ -85,6 +85,10 @@ export default function EnrolPage() {
             <TextInput
               variant="unstyled"
               sx={{ textDecoration: "none", backgroundColor: "white" }}
+              styles={{
+                input: { paddingLeft: "0.5rem", paddingRight: "0.5rem" },
+                label: { paddingLeft: "0.5rem", paddingRight: "0.5rem" },
+              }}
               className="rounded-md border border-solid border-t-0 border-l-0 border-r-0 border-b-2 rounded-b-none"
               label="Username"
               placeholder="Username"
@@ -93,6 +97,10 @@ export default function EnrolPage() {
             <TextInput
               variant="unstyled"
               sx={{ textDecoration: "none", backgroundColor: "white" }}
+              styles={{
+                input: { paddingLeft: "0.5rem", paddingRight: "0.5rem" },
+                label: { paddingLeft: "0.5rem", paddingRight: "0.5rem" },
+              }}
               className="rounded-md border border-solid border-t-0 border-l-0 border-r-0 border-b-2 rounded-b-none"
               label="First Name"
               placeholder="First Name"
@@ -101,6 +109,10 @@ export default function EnrolPage() {
             <TextInput
               variant="unstyled"
               sx={{ textDecoration: "none", backgroundColor: "white" }}
+              styles={{
+                input: { paddingLeft: "0.5rem", paddingRight: "0.5rem" },
+                label: { paddingLeft: "0.5rem", paddingRight: "0.5rem" },
+              }}
               className="rounded-md border border-solid border-t-0 border-l-0 border-r-0 border-b-2 rounded-b-none"
               label="Last Name"
               placeholder="Last Name"
@@ -109,6 +121,10 @@ export default function EnrolPage() {
             <PasswordInput
               variant="unstyled"
               sx={{ textDecoration: "none", backgroundColor: "white" }}
+              styles={{
+                innerInput: { paddingLeft: "0.5rem", paddingRight: "0.5rem" },
+                label: { paddingLeft: "0.5rem", paddingRight: "0.5rem" },
+              }}
               className="rounded-md border border-solid border-t-0 border-l-0 border-r-0 border-b-2 rounded-b-none"
               label="Password"
               placeholder="Password"
@@ -117,6 +133,10 @@ export default function EnrolPage() {
             <PasswordInput
               variant="unstyled"
               sx={{ textDecoration: "none", backgroundColor: "white" }}
+              styles={{
+                innerInput: { paddingLeft: "0.5rem", paddingRight: "0.5rem" },
+                label: { paddingLeft: "0.5rem", paddingRight: "0.5rem" },
+              }}
               className="rounded-md border border-solid border-t-0 border-l-0 border-r-0 border-b-2 rounded-b-none"
               label="Repeat Password"
               placeholder="Repeat Password"
