@@ -137,7 +137,7 @@ export default function Dashboard(
           </>
         }
         
-        <Button
+        <Button variant="subtle" className="text-gray-600 hover:text-gray-200 hover:border-opacity-0 border-gray-700 hover:bg-gray-700 hover:bg-opacity-50 border-4 border-dashed  rounded-lg border-opacity-50"
           onClick={async () => {
             const result = await fetch("/api/request", {
               method: "post",
