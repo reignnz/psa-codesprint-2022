@@ -18,6 +18,7 @@ import { sessionOptions } from "../../lib/session";
 import { Role } from "@prisma/client";
 import { HiOutlineUser, HiOutlineUsers } from "react-icons/hi";
 import { RiShieldCrossLine } from "react-icons/ri";
+import BackButton from "../../components/BackButton";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -85,6 +86,7 @@ export default function EnrolPage() {
   return (
     <Box className="h-screen bg-no-repeat relative flex items-center justify-center">
       <Stack sx={{ width: "350px" }}>
+        <BackButton></BackButton>
         <Text className="text-5xl">Create a </Text>
         <Text className="text-5xl">User.</Text>
 
