@@ -19,6 +19,7 @@ import { Role } from "@prisma/client";
 import { HiOutlineUser, HiOutlineUsers } from "react-icons/hi";
 import { RiShieldCrossLine } from "react-icons/ri";
 import BackButton from "../../components/BackButton";
+import prisma from "../../lib/prisma";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
