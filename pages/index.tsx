@@ -1,5 +1,6 @@
 import { Box, Stack, Text, Group, ActionIcon, Button } from "@mantine/core";
 import { HiUserCircle } from "react-icons/hi";
+import { BsFillPersonPlusFill } from 'react-icons/bs'
 import { MdArrowForwardIos } from "react-icons/md";
 import Link from "next/link";
 import prisma from "../lib/prisma";
@@ -107,23 +108,31 @@ export default function Dashboard(
             <Text className="font-bold text-3xl"> Hello, </Text>
             <Text className="font-bold"> {user?.firstName}! </Text>
           </Stack>
-          <Group spacing={4}>
+          <Group spacing={10}>
             {user.isAdmin && (
               <Link href={`/enrol`} passHref>
                 <ActionIcon
                   variant="transparent"
                   type="submit"
                   size="xl"
-                  className="flex items-center justify-center mx-auto hover:translate-x-1 duration-150"
+                  className="flex items-center justify-center mx-auto hover:scale-110 duration-150"
                   sx={{}}
                 >
-                  <HiPencilAlt className="text-gray-700" size={40} />
+                  <BsFillPersonPlusFill className="text-gray-700" size={40} />
                 </ActionIcon>
               </Link>
             )}
 
             <Link href={`/account`} passHref>
-              <HiUserCircle size={50} className="w-20 text-gray-700" />
+              <ActionIcon
+                  variant="transparent"
+                  type="submit"
+                  size="xl"
+                  className="flex items-center justify-center mx-auto hover:scale-110 duration-150"
+                  sx={{}}
+                >
+                <HiUserCircle size={50} className="w-20 text-gray-700" />
+              </ActionIcon>
             </Link>
           </Group>
         </Group>
