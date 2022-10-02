@@ -12,11 +12,10 @@ import { useForm } from "@mantine/form";
 import { withIronSessionSsr } from "iron-session/next";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { IoIosArrowBack } from "react-icons/io";
 import PasswordStrengthMeter from "../components/progressBar";
 import { sessionOptions } from "../lib/session";
-import Link from "next/link";
 import BackButton from "../components/BackButton";
+import prisma from "../lib/prisma";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
