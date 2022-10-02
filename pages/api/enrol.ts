@@ -8,7 +8,9 @@ import hashPassword from "../../lib/hash";
 export default withIronSessionApiRoute(enrolRoute, sessionOptions);
 
 async function enrolRoute(req: NextApiRequest, res: NextApiResponse) {
-  if (!req.session?.user?.isAdmin) {
+  if (
+    !(await prisma.user.count({ where: { id: req.session.id, isAdmin: true } }))
+  ) {
     return res.status(401).send("Unauthorized");
   }
 

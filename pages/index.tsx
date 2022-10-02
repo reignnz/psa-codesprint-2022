@@ -14,14 +14,14 @@ import { mapToHsl } from "../lib/color";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
-    if (!req.session.user) {
+    if (!req.session.id) {
       return {
         redirect: {
           destination: "/login",
           permanent: false,
         },
       };
-    } else if (req.session.user.role === "DESIGNATED_OFFICER") {
+    } else if (await prisma.user.count({where: {id: req.session.id, role: "DESIGNATED_OFFICER"}})) {
       return {
         redirect: {
           destination: "/do",
@@ -31,7 +31,7 @@ export const getServerSideProps = withIronSessionSsr(
     } else {
       const user = await prisma.user.findUnique({
         where: {
-          id: req.session.user.id,
+          id: req.session.id,
         },
         include: {
           requests: {

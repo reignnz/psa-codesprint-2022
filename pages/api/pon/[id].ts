@@ -6,11 +6,13 @@ import prisma from "../../../lib/prisma";
 export default withIronSessionApiRoute(ponUpdateRoute, sessionOptions);
 
 async function ponUpdateRoute(req: NextApiRequest, res: NextApiResponse) {
-  if (req.session.user.role !== "STAFF") {
+  if (
+    (await prisma.user.count({
+      where: { id: req.session.id, role: "STAFF" },
+    })) === 0
+  ) {
     return res.status(401).send("Unauthorized");
   }
-
-  console.log(req.body)
 
   const result = await prisma.pON.updateMany({
     where: {
@@ -18,7 +20,7 @@ async function ponUpdateRoute(req: NextApiRequest, res: NextApiResponse) {
       id: Number(req.query.id),
       request: {
         requestedBy: {
-          id: req.session.user.id,
+          id: req.session.id,
         },
       },
     },
@@ -30,8 +32,6 @@ async function ponUpdateRoute(req: NextApiRequest, res: NextApiResponse) {
       item_descriptions: req.body.item_descriptions,
     },
   });
-
-  console.log(result);
 
   if (result.count) {
     return res.status(200).send("PON updated successfully");

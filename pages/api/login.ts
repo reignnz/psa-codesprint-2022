@@ -22,7 +22,7 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
   const passwordHash = user.password_hash;
 
   if (bcrypt.compareSync(password, passwordHash)) {
-    req.session.user = user;
+    req.session.id = user.id;
     await req.session.save();
     res.redirect("/");
   } else {
