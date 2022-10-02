@@ -124,6 +124,7 @@ export default function LoginPage() {
 
             <ActionIcon
               type="submit"
+              variant="transparent"
               size="xl"
               className="flex items-center justify-center mx-auto pt-4 mt-4"
               sx={{}}
