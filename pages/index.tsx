@@ -114,23 +114,23 @@ export default function Dashboard(
                   variant="transparent"
                   type="submit"
                   size="xl"
-                  className="flex items-center justify-center mx-auto hover:translate-x-1 duration-150"
+                  className="flex items-center justify-center mx-auto duration-150"
                   sx={{}}
                 >
-                  <HiPencilAlt className="text-gray-700" size={40} />
+                  <HiPencilAlt className="text-gray-700 hover:text-gray-900 duration-100" size={40} />
                 </ActionIcon>
               </Link>
             )}
 
             <Link href={`/account`} passHref>
-              <HiUserCircle size={50} className="w-20 text-gray-700" />
+              <HiUserCircle size={50} className="w-20 text-gray-700 hover:text-gray-900 duration-100 cursor-pointer" />
             </Link>
           </Group>
         </Group>
 
         {
           issuedPons.length > 0 && <>
-              <h2>Your PONs</h2>
+              <text className="text-3xl">Your PONs</text>
             {issuedPons.map((pon, index) => (
               <PonRow pon={pon!} key={index} />
             ))}
@@ -154,7 +154,7 @@ export default function Dashboard(
 
         {sharedPons.length > 0 && (
           <>
-            <h2>Shared with you</h2>
+            <text className="text-3xl">Shared with you</text>
 
             {sharedPons.map((pon, index) => (
               <PonRow pon={pon!} key={index} />
@@ -183,11 +183,7 @@ function PonRow({ pon }: { pon: PON }) {
         <Text>Date: {pon?.issued_at.toDateString()}</Text>
         <Text>
           Status:{" "}
-          {pon?.isArchived
-            ? "ARCHIVED"
-            : pon?.isCompleted
-            ? "COMPLETED"
-            : "ISSUED"}
+          {pon?.status}
         </Text>
       </Stack>
 

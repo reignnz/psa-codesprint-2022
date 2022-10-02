@@ -133,7 +133,9 @@ export default function Dashboard(props: {
             <Text className="font-bold text-3xl"> {user.firstName} </Text>
           </Stack>
 
-          <HiUserCircle size={50} className="w-20" />
+          <Link href="/account" passHref>
+            <HiUserCircle size={50} className="w-20 text-gray-700 hover:text-gray-900 cursor-pointer duration-100" />
+          </Link>
         </Group>
 
         <Text className="text-3xl font-bold pt-4">Pending: </Text>

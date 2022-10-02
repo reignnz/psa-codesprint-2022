@@ -16,10 +16,13 @@ import { HiPencil, HiPlus, HiOutlineX, HiOutlineCheck } from "react-icons/hi";
 import prisma from "../../lib/prisma";
 import { useMediaQuery } from "@mantine/hooks";
 import { withIronSessionSsr } from "iron-session/next";
-import { Picture, PON, Signature, Verification } from "@prisma/client";
+import { Picture, PON, Signature, User, Verification, Request } from "@prisma/client";
 import { sessionOptions } from "../../lib/session";
 import { mapToHsl } from "../../lib/color";
-import { StaffActionChip, staffActionType } from "../../components/StaffActionChip";
+import {
+  StaffActionChip,
+  staffActionType,
+} from "../../components/StaffActionChip";
 import { CsoActionChip, CsoActionType } from "../../components/CsoActionChip";
 import { showNotification } from "@mantine/notifications";
 
@@ -31,11 +34,25 @@ enum PonState {
   EDITING,
   SIGNING,
   VERIFYING,
-  VIEWING
+  VIEWING,
 }
 
 export const getServerSideProps = withIronSessionSsr(
   async ({ req, params }) => {
+
+    const user = await prisma.user.findUnique({
+      where: {id: req.session.id}
+    })
+
+    if (!user) {
+      return {
+        redirect: {
+          destination: "/login",
+          permanent: false,
+        },
+      };
+    }
+
     const pon = await prisma.pON.findFirst({
       where: {
         OR: [
@@ -58,16 +75,25 @@ export const getServerSideProps = withIronSessionSsr(
         notFound: true,
       };
     }
-    
+
     var ponState = PonState.VIEWING;
-    if (pon.status === "ISSUED" && pon.request.requestedById === req.session.id) {
+    if (
+      pon.status === "ISSUED" &&
+      pon.request.requestedById === req.session.id
+    ) {
       ponState = PonState.EDITING;
-    } else if (pon.status === "PENDING" && pon.request.requestedById !== req.session.id) {
+    } else if (
+      pon.status === "PENDING" &&
+      pon.request.requestedById !== req.session.id
+    ) {
       ponState = PonState.SIGNING;
     }
 
+    console.log(pon.status, pon.request.requestedById, req.session.id)
+
     return {
       props: {
+        user,
         pon,
         editable:
           pon.request.requestedById === req.session.id &&
@@ -80,17 +106,20 @@ export const getServerSideProps = withIronSessionSsr(
 );
 
 export default function Pon({
+  user,
   pon,
   editable,
   ponState,
 }: PON &
   PonProps & {
+    user: User,
     pon: PON & {
+      request: Request,
       signature: Signature | null;
       verification: Verification | null;
       pictures: Picture[];
     };
-  } & {ponState: PonState}) {
+  } & { ponState: PonState }) {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
   const isTablet = useMediaQuery(
@@ -125,7 +154,9 @@ export default function Pon({
     })
   );
 
-  const [editCompanyName, setEditCompanyName] = useState(ponDetails.company_name || "Company Name");
+  const [editCompanyName, setEditCompanyName] = useState(
+    ponDetails.company_name || "Company Name"
+  );
 
   async function submitDetails() {
     const result = await fetch(`/api/pon/${pon.id}`, {
@@ -145,7 +176,7 @@ export default function Pon({
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({item_descriptions: editableItems}),
+      body: JSON.stringify({ item_descriptions: editableItems }),
     });
     if (!result) {
       location.reload();
@@ -181,21 +212,30 @@ export default function Pon({
     ["VERIFIED", "#90730ACC"],
   ]);
 
-  const [shareUserName, setShareUserName] = useState('')
-  const [openModal, setOpenModal] = useState(false)
-  
+  const [shareUserName, setShareUserName] = useState("");
+  const [openModal, setOpenModal] = useState(false);
 
   return (
     <Box className="flex relative items-center justify-center py-20">
-      <Modal opened={openModal} onClose={() => setOpenModal(false)}title="Share with user">
+      <Modal
+        opened={openModal}
+        onClose={() => setOpenModal(false)}
+        title="Share with user"
+      >
         <>
-          <TextInput value={shareUserName} placeholder="Enter username" onChange={(event) => setShareUserName(event.currentTarget.value)}/> 
-          <Group position="right" className="mt-2"><Button onClick={() => console.log(shareUserName) }>Share</Button></Group>
+          <TextInput
+            value={shareUserName}
+            placeholder="Enter username"
+            onChange={(event) => setShareUserName(event.currentTarget.value)}
+          />
+          <Group position="right" className="mt-2">
+            <Button onClick={() => console.log(shareUserName)}>Share</Button>
+          </Group>
         </>
       </Modal>
       <Stack sx={{ width: isMobile ? "280px" : "600px" }}>
         <Group
-          position= "apart"
+          position="apart"
           noWrap
           className="mx-auto"
           sx={{ width: isMobile ? "270px" : "600px" }}
@@ -205,7 +245,11 @@ export default function Pon({
             {editable == false ? (
               <></>
             ) : (
-              <Group noWrap className="sm:text-sm lg:text-lg flex relative" spacing={0}>
+              <Group
+                noWrap
+                className="sm:text-sm lg:text-lg flex relative"
+                spacing={0}
+              >
                 {editName ? (
                   <TextInput
                     value={editCompanyName}
@@ -221,8 +265,7 @@ export default function Pon({
                     className="hover:rounded-full align-baseline"
                     onClick={() => setEditName(false)}
                   >
-                    <HiOutlineCheck size={15} onClick={ () => submitCompany() }
-                      />
+                    <HiOutlineCheck size={15} onClick={() => submitCompany()} />
                   </ActionIcon>
                 ) : (
                   <ActionIcon
@@ -439,7 +482,7 @@ export default function Pon({
                   setPonDetails((prev) => {
                     return { ...prev, items: editableItems };
                   });
-                  setEditableItems(editableItems.filter(i => i));
+                  setEditableItems(editableItems.filter((i) => i));
                   submitItems();
                 }}
               >
@@ -544,35 +587,96 @@ export default function Pon({
             </Group>
           ) : (
             <></>
-          )}     
+          )}
         </Box>
 
-        {ponState === PonState.EDITING ? (<>
-        <StaffActionChip onClick={async () => {
-          const username = prompt("Enter a username");
-          const result = await fetch(`/api/pon/share`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({id : pon.id, username: username}),
-          })
+        <Group position="center">
+          {pon.request.requestedById === user.id && (
+             <StaffActionChip
+            onClick={async () => {
+              const username = prompt("Enter a username");
+              const result = await fetch(`/api/pon/share`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ id: pon.id, username: username }),
+              });
 
-          if (!result.ok) {
-            showNotification({title: await result.text(), message: ""})
-          }
-        }} action={staffActionType.SHARE}></StaffActionChip>
+              if (!result.ok) {
+                showNotification({ title: await result.text(), message: "" });
+              }
+            }}
+            action={staffActionType.SHARE}
+          ></StaffActionChip>
+          )}
+         
+          {ponState === PonState.EDITING ? (
+            <>
+              <StaffActionChip
+                onClick={async () => {
+                  const result = await fetch(`/api/pon/submit`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ id: pon.id }),
+                  });
+                  showNotification({ title: await result.text(), message: "" });
+                }}
+                action={staffActionType.SUBMIT}
+              ></StaffActionChip>
+              <StaffActionChip
+                onClick={() => {}}
+                action={staffActionType.PRINT}
+              ></StaffActionChip>
+            </>
+          ) : ponState === PonState.SIGNING ? (
+            <>
+              <CsoActionChip
+                onClick={async () => {
+                  const result = await fetch(`/api/pon/sign`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ id: pon.id, isAccepted: false }),
+                  })
 
-        <StaffActionChip onClick={() => {}} action={staffActionType.PRINT}></StaffActionChip>
-        </>)
-        : ponState === PonState.SIGNING ? (<>
-          <CsoActionChip onClick={() => {}} action={CsoActionType.REJECT}></CsoActionChip>
-          <CsoActionChip onClick={() => {}} action={CsoActionType.SIGN}></CsoActionChip>
-          </>)
-          : <></>
-      }
+                  if (!result.ok) {
+                    showNotification({ title: await result.text(), message: "" });
+                  } else {
+                    location.reload();
+                  }
+                }}
+                className="bg-red-700 drop-shadow-sm hover:shadow-red-200 hover:shadow-md duration-300 active:shadow-none"
+                action={CsoActionType.REJECT}
+              ></CsoActionChip>
+              <CsoActionChip
+                onClick={async () => {
+                  const result = await fetch(`/api/pon/sign`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ id: pon.id, isAccepted: true }),
+                  })
 
-        </Stack>
+                  if (!result.ok) {
+                    showNotification({ title: await result.text(), message: "" });
+                  } else {
+                    location.reload();
+                  }
+                }}
+                className="bg-green-700 shadow-sm hover:shadow-green-200 hover:shadow-md duration-300 active:shadow-none"
+                action={CsoActionType.SIGN}
+              ></CsoActionChip>
+            </>
+          ) : (
+            <></>
+          )}
+        </Group>
+      </Stack>
     </Box>
   );
 }
