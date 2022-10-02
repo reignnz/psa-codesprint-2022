@@ -9,8 +9,8 @@ import { useMediaQuery } from "@mantine/hooks";
 import { sessionOptions } from "../lib/session";
 import { withIronSessionSsr } from "iron-session/next";
 import { PON, User, Visibility } from "@prisma/client";
-import { createHash } from "crypto";
 import { mapToHsl } from "../lib/color";
+import { HiPencilAlt } from "react-icons/hi";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -107,8 +107,25 @@ export default function Dashboard(
             <Text className="font-bold text-3xl"> Hello, </Text>
             <Text className="font-bold"> {user?.firstName}! </Text>
           </Stack>
+          <Group spacing={4}>
+            {user.isAdmin && (
+              <Link href={`/enrol`} passHref>
+                <ActionIcon
+                  variant="transparent"
+                  type="submit"
+                  size="xl"
+                  className="flex items-center justify-center mx-auto hover:translate-x-1 duration-150"
+                  sx={{}}
+                >
+                  <HiPencilAlt className="text-gray-700" size={40} />
+                </ActionIcon>
+              </Link>
+            )}
 
-          <HiUserCircle size={50} className="w-20" />
+            <Link href={`/account`} passHref>
+              <HiUserCircle size={50} className="w-20 text-gray-700" />
+            </Link>
+          </Group>
         </Group>
 
         {
