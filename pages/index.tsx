@@ -180,6 +180,7 @@ export default function Dashboard(
 
 function PonRow({ pon }: { pon: PON }) {
   return (
+    <Link href={`/pon/${pon?.id}`} passHref>
     <Group
       key={pon?.id}
       position="apart"
@@ -198,11 +199,11 @@ function PonRow({ pon }: { pon: PON }) {
         </Group>
       </Stack>
 
-      <Link href={`/pon/${pon?.id}`} passHref>
         <ActionIcon>
           <MdArrowForwardIos />
         </ActionIcon>
+        </Group>
+
       </Link>
-    </Group>
   );
 }
