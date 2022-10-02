@@ -8,6 +8,7 @@ import PasswordStrengthMeter from "../components/progressBar";
 import { sessionOptions } from "../lib/session";
 import BackButton from "../components/BackButton";
 import prisma from "../lib/prisma";
+import { showNotification } from "@mantine/notifications";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -105,7 +106,7 @@ export default function AccountPage({
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
 
   return (
-    <Box className="flex justify-center items-center pt-20">
+    <Box className="flex justify-center items-center pt-20  pb-8">
       <Stack sx={{width: isMobile? '260px' : '320px'}}>
         <BackButton></BackButton>
         <Group position="apart">
@@ -151,9 +152,9 @@ export default function AccountPage({
           onSubmit={passwordForm.onSubmit(async (data) => {
             const result = await submitForm("/api/account/change", data);
             if (result.ok) {
-              alert("Password changed successfully");
+              showNotification({title:"Password changed successfully", message:""});
             } else {
-              setPasswordFormError(await result.text());
+              showNotification({ title: await result.text(), message: "", color: "red"});
             }
           })}
         >

@@ -1,0 +1,11 @@
+# URL to postgres database
+DATABASE_URL="postgresql://[username]:[password]@[host]:5432/[database]"
+
+# Session cookie used for iron-session
+SESSION_COOKIE_NAME="sid"
+
+# Session secret used for iron-session (must be 32 characters or longer)
+SESSION_COOKIE_SECRET="s3cURe-p4$$w0rd_L0ng3r +han~32_cHar4ct3r5"
+
+# Security parameter for the minimum complexity of user passwords. Possible values are: 0, 1, 2, 3, 4, 5
+PASSWORD_MIN_STRENGTH=3

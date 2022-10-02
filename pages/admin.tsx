@@ -1,5 +1,3 @@
-import { GetServerSidePropsContext } from "next";
-import prisma from "../lib/prisma";
 import {
   Button,
   ActionIcon,
@@ -14,25 +12,8 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/router";
-import { useState } from "react";
-
 import PasswordStrengthMeter from "../components/progressBar";
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const userCount = await prisma.user.count();
-  if (userCount) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  } else {
-    return {
-      props: {},
-    };
-  }
-}
+import { showNotification } from "@mantine/notifications";
 
 export declare type EnrolFormData = {
   username: string;
@@ -55,8 +36,6 @@ export default function EnrolPage() {
     },
   });
 
-  const [error, setError] = useState("");
-
   async function submitForm(data: EnrolFormData) {
     const response = await fetch("/api/admin", {
       method: "POST",
@@ -69,7 +48,7 @@ export default function EnrolPage() {
     if (response.ok) {
       router.push("/");
     } else {
-      setError(await response.text());
+      showNotification({title: "Unable to create an admin", message: (await response?.json()).message, color: "red"});
     }
   }
 
@@ -80,7 +59,6 @@ export default function EnrolPage() {
         <Text className="text-5xl">Admin.</Text>
 
         <form onSubmit={form.onSubmit((data) => submitForm(data))}>
-          {error ? <p className="text-sm text-red-500">{error}</p> : <></>}
           <Stack>
             <TextInput
               variant="unstyled"
@@ -130,6 +108,7 @@ export default function EnrolPage() {
               placeholder="Password"
               {...form.getInputProps("password")}
             />
+            <PasswordStrengthMeter password={form.values.password} />
             <PasswordInput
               variant="unstyled"
               sx={{ textDecoration: "none", backgroundColor: "white" }}
@@ -142,7 +121,6 @@ export default function EnrolPage() {
               placeholder="Repeat Password"
               {...form.getInputProps("password_repeat")}
             />
-            <PasswordStrengthMeter password={form.values.password} />
           </Stack>
           <Group position="right" mt="md">
             <Button type="submit">Submit</Button>

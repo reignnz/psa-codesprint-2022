@@ -9,7 +9,7 @@ import { useMediaQuery, useReducedMotion } from "@mantine/hooks";
 import { withIronSessionSsr } from "iron-session/next";
 import { sessionOptions } from "../../lib/session";
 import { PON, User, Request } from "@prisma/client";
-import { statusToColor } from "../../lib/color";
+import { mapToHsl, statusToColor } from "../../lib/color";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -84,23 +84,6 @@ export default function Dashboard(props: {
   );
   const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.lg}px)`);
 
-  function random_rgba() {
-    var o = Math.round,
-      r = Math.random,
-      s = 255;
-    return (
-      "rgba(" +
-      o(r() * s) +
-      "," +
-      o(r() * s) +
-      "," +
-      o(r() * s) +
-      "," +
-      r().toFixed(1) +
-      ")"
-    );
-  }
-
   async function issuePon(id: number) {
     const result = await fetch("/api/issue", {
       method: "POST",
@@ -151,7 +134,7 @@ export default function Dashboard(props: {
             >
               <Stack spacing={1} className="font-bold">
                 <Text>REQ</Text>
-                <Text sx={{ color: random_rgba() }}>#{request.id}</Text>
+                <Text sx={{ color: mapToHsl(request.id) }}>#{request.id}</Text>
               </Stack>
 
               <Stack spacing={1}>
@@ -183,7 +166,7 @@ export default function Dashboard(props: {
             >
               <Stack spacing={1} className="font-bold">
                 <Text>PON</Text>
-                <Text sx={{ color: random_rgba() }}>#{pon.id}</Text>
+                <Text sx={{ color: mapToHsl(pon.id) }}>#{pon.id}</Text>
               </Stack>
 
               <Stack spacing={1}>
