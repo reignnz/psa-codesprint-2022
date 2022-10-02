@@ -212,16 +212,12 @@ export default function Pon({
     ["VERIFIED", "#90730ACC"],
   ]);
 
-  const [shareUserName, setShareUserName] = useState("");
-  const [openModal, setOpenModal] = useState(false);
-
+  const [shareUserName, setShareUserName] = useState("")
+  const [openModal, setOpenModal] = useState(false)
+  
   return (
     <Box className="flex relative items-center justify-center py-20">
-      <Modal
-        opened={openModal}
-        onClose={() => setOpenModal(false)}
-        title="Share with user"
-      >
+      <Modal opened={openModal} onClose={() => setOpenModal(false)} title="Share with user" className="print:hidden">
         <>
           <TextInput
             value={shareUserName}
@@ -279,7 +275,7 @@ export default function Pon({
             )}
           </Stack>
           <Stack
-            className="p-2 m-2 flex justify-center items-center mx-auto lg:w-1/2 drop-shadow-md"
+            className="p-2 m-2 flex justify-center items-center ml-auto lg:w-1/2 drop-shadow-md"
             spacing={2}
             sx={{ backgroundColor: "#FFFBFE" }}
           >
@@ -312,7 +308,7 @@ export default function Pon({
             <></>
           ) : (
             <ActionIcon
-              className="absolute -top-0 -right-0 hover:rounded-full"
+              className="absolute -top-0 -right-0 hover:rounded-full print:hidden"
               onClick={() => setEditDetails(true)}
             >
               <HiPencil size={20} />
@@ -321,7 +317,7 @@ export default function Pon({
 
           <Stack
             spacing={2}
-            className="border-solid border-gray-600 border-t-0 border-l-0 border-r-0 border-b-2 py-2"
+            className="border-dashed border-gray-600 border-t-0 border-l-0 border-r-0 border-b-2 py-2"
           >
             <Text className="font-bold text-sm">Driver Name</Text>
             {editDetails ? (
@@ -341,7 +337,7 @@ export default function Pon({
 
           <Stack
             spacing={2}
-            className="border-solid border-gray-600 border-t-0 border-l-0 border-r-0 border-b-2 py-2"
+            className="border-dashed border-gray-600 border-t-0 border-l-0 border-r-0 border-b-2 py-2"
           >
             <Text className="font-bold text-sm">Driver PSA Pass</Text>
             {editDetails ? (
@@ -361,7 +357,6 @@ export default function Pon({
 
           <Stack
             spacing={2}
-            className="border-solid border-gray-600 border-t-0 border-l-0 border-r-0 border-b-2 py-2"
           >
             <Text className="font-bold text-sm">Vehicle Number</Text>
             {editDetails ? (
@@ -416,7 +411,7 @@ export default function Pon({
             <></>
           ) : (
             <ActionIcon
-              className="absolute -top-0 -right-0 hover:rounded-full"
+              className="absolute -top-0 -right-0 hover:rounded-full print:hidden"
               onClick={() => setEditItems(true)}
             >
               <HiPencil size={20} />
@@ -495,7 +490,7 @@ export default function Pon({
         </Stack>
 
         <Box
-          className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-md p-5 my-5"
+          className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-md p-5 my-5 print:hidden"
           sx={{ backgroundColor: "#FFFBFE" }}
         >
           {editable == false ? (
@@ -549,7 +544,7 @@ export default function Pon({
           {editImages ? (
             <Group position="right">
               <ActionIcon
-                className="border border-solid border-r-20 rounded-full"
+                className="border border-solid border-r-20 rounded-full print:hidden"
                 sx={{ backgroundColor: "#F4EFF4" }}
                 onClick={() => {
                   setEditImages(false);

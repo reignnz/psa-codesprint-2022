@@ -1,4 +1,4 @@
-import { Button, Group, PasswordInput, TextInput } from "@mantine/core";
+import { Button, Group, PasswordInput, TextInput, Box, Text, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { withIronSessionSsr } from "iron-session/next";
 import { useRouter } from "next/router";
@@ -101,12 +101,12 @@ export default function AccountPage({
   }
 
   return (
-    <div>
-      <div>
-        <h1>Account</h1>
-        <Button onClick={() => router.push("/api/logout")}>Logout</Button>
-      </div>
-      <div>
+    <Box className="flex justify-center items-center pt-20">
+      <Stack className="w-1/4">
+        <Group position="apart">
+          <Text className="font-bold text-3xl">Account</Text >
+          <Button onClick={() => router.push("/api/logout")} className="bg-red-500 hover:bg-red-600">Log Out</Button>
+        </Group>
         <form
           onSubmit={profileForm.onSubmit(async (data) => {
             const result = await submitForm("/api/account/update", data);
@@ -124,21 +124,19 @@ export default function AccountPage({
             {...profileForm.getInputProps("username")}
           />
           <TextInput
+            disabled
             label="First Name"
             placeholder="First Name"
             {...profileForm.getInputProps("firstName")}
           />
           <TextInput
+            disabled
             label="Last Name"
             placeholder="Last Name"
             {...profileForm.getInputProps("lastName")}
           />
-
-          <Group position="right" mt="md">
-            <Button type="submit">Update</Button>
-          </Group>
         </form>
-
+        <Text className="text-3xl font-bold mt-4">Change your password</Text>
         <form
           onSubmit={passwordForm.onSubmit(async (data) => {
             const result = await submitForm("/api/account/change", data);
@@ -172,7 +170,7 @@ export default function AccountPage({
             <Button type="submit">Reset Password</Button>
           </Group>
         </form>
-      </div>
-    </div>
+      </Stack>
+    </Box>
   );
 }
