@@ -1,5 +1,5 @@
 import { Box, Stack, Text, Group, ActionIcon } from "@mantine/core";
-import { HiUserCircle } from "react-icons/hi";
+import { HiOutlineUsers, HiUserCircle } from "react-icons/hi";
 import { MdArrowForwardIos } from "react-icons/md";
 import Link from "next/link";
 import prisma from "../../lib/prisma";
@@ -130,7 +130,10 @@ export default function Dashboard(props: {
         <Group position="apart">
           <Stack spacing={2}>
             <Text className="font-bold text-3xl"> Hello </Text>
-            <Text className="font-bold text-3xl"> {user.firstName} </Text>
+            <Group>
+              <Text className="font-bold text-3xl"> {user.firstName} </Text>
+              <HiOutlineUsers className="mx-auto" size={20} />
+            </Group>
           </Stack>
 
           <HiUserCircle size={50} className="w-20" />
