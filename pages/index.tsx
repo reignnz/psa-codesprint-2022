@@ -2,15 +2,16 @@ import { Box, Stack, Text, Group, ActionIcon, Button } from "@mantine/core";
 import { HiUserCircle } from "react-icons/hi";
 import { MdArrowForwardIos } from "react-icons/md";
 import Link from "next/link";
-import prisma from "../lib/prisma"
+import prisma from "../lib/prisma";
 
 import { useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { sessionOptions } from "../lib/session";
 import { withIronSessionSsr } from "iron-session/next";
 import { PON, User } from "@prisma/client";
-import { createHash } from "crypto";
 import { mapToHsl } from "../lib/color";
+import { HiPencilAlt } from "react-icons/hi";
+import { ImExit } from "react-icons/im";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -21,7 +22,11 @@ export const getServerSideProps = withIronSessionSsr(
           permanent: false,
         },
       };
-    } else if (await prisma.user.count({where: {id: req.session.id, role: "DESIGNATED_OFFICER"}})) {
+    } else if (
+      await prisma.user.count({
+        where: { id: req.session.id, role: "DESIGNATED_OFFICER" },
+      })
+    ) {
       return {
         redirect: {
           destination: "/do",
@@ -37,7 +42,7 @@ export const getServerSideProps = withIronSessionSsr(
           requests: {
             include: {
               pon: true,
-            }
+            },
           },
         },
       });
@@ -59,7 +64,9 @@ export const getServerSideProps = withIronSessionSsr(
   sessionOptions
 );
 
-export default function Dashboard(user: (User & { requests: (Request & { pon: PON | null;})[] })) {
+export default function Dashboard(
+  user: User & { requests: (Request & { pon: PON | null })[] }
+) {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
   const isTablet = useMediaQuery(
@@ -70,8 +77,12 @@ export default function Dashboard(user: (User & { requests: (Request & { pon: PO
   );
   const isDesktop = useMediaQuery(`(min-width: ${theme.breakpoints.lg}px)`);
 
-  const unissuedRequests = user?.requests.filter((request) => request.pon === null);
-  const issuedPons = user?.requests.filter((request) => request.pon !== null).map((request) => request.pon);
+  const unissuedRequests = user?.requests.filter(
+    (request) => request.pon === null
+  );
+  const issuedPons = user?.requests
+    .filter((request) => request.pon !== null)
+    .map((request) => request.pon);
 
   return (
     <Box className="flex relative items-center justify-center py-20">
@@ -81,8 +92,37 @@ export default function Dashboard(user: (User & { requests: (Request & { pon: PO
             <Text className="font-bold text-3xl"> Hello, </Text>
             <Text className="font-bold"> {user?.firstName}! </Text>
           </Stack>
+          <Group spacing={4}>
+            {user.isAdmin && (
+              <Link href={`/enrol`} passHref>
+                <ActionIcon
+                  variant="transparent"
+                  type="submit"
+                  size="xl"
+                  className="flex items-center justify-center mx-auto hover:translate-x-1 duration-150"
+                  sx={{}}
+                >
+                  <HiPencilAlt className="text-gray-700" size={40} />
+                </ActionIcon>
+              </Link>
+            )}
 
-          <HiUserCircle size={50} className="w-20" />
+            {/* <Link href={`/api/logout`} passHref>
+              <ActionIcon
+                variant="transparent"
+                type="submit"
+                size="xl"
+                className="flex items-center justify-center mx-auto hover:translate-x-1 duration-150"
+                sx={{}}
+              >
+                <ImExit className="w-20 text-gray-700" size={40} />
+              </ActionIcon>
+            </Link> */}
+
+            <Link href={`/account`} passHref>
+              <HiUserCircle size={50} className="w-20 text-gray-700" />
+            </Link>
+          </Group>
         </Group>
 
         {issuedPons.map((pon, index) => (
@@ -99,7 +139,14 @@ export default function Dashboard(user: (User & { requests: (Request & { pon: PO
 
             <Stack spacing={1}>
               <Text>Date: {pon?.issued_at.toDateString()}</Text>
-              <Text>Status: {pon?.isArchived ? "ARCHIVED" : pon?.isCompleted ? "COMPLETED" : "ISSUED"}</Text>
+              <Text>
+                Status:{" "}
+                {pon?.isArchived
+                  ? "ARCHIVED"
+                  : pon?.isCompleted
+                  ? "COMPLETED"
+                  : "ISSUED"}
+              </Text>
             </Stack>
 
             <Link href={`/pon/${pon?.id}`} passHref>
@@ -121,7 +168,8 @@ export default function Dashboard(user: (User & { requests: (Request & { pon: PO
             }
           }}
         >
-          Request{unissuedRequests?.length ? ` (${unissuedRequests?.length})` : ""}
+          Request
+          {unissuedRequests?.length ? ` (${unissuedRequests?.length})` : ""}
         </Button>
       </Stack>
     </Box>
