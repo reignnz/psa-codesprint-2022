@@ -105,7 +105,7 @@ export default function AccountPage({
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
 
   return (
-    <Box className="flex justify-center items-center pt-20">
+    <Box className="flex justify-center items-center pt-20  pb-8">
       <Stack sx={{width: isMobile? '260px' : '320px'}}>
         <BackButton></BackButton>
         <Group position="apart">
