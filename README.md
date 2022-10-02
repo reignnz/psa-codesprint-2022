@@ -1,5 +1,3 @@
-<img src="">
-
 <p align="center">
   <img width="640"src="public/logo.svg" alt="PSAccess logo">
 </p>
