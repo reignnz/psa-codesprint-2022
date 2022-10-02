@@ -29,7 +29,7 @@ async function ponUpdateRoute(req: NextApiRequest, res: NextApiResponse) {
       vehicle_number: req.body.vehicle_number,
       driver_name: req.body.driver_name,
       driver_pass_number: req.body.driver_pass_number,
-      item_descriptions: req.body.item_descriptions,
+      item_descriptions: req.body.item_descriptions?.filter((item: string) => item.trim()),
     },
   });
 
