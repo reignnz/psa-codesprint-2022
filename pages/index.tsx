@@ -1,4 +1,4 @@
-import { Box, Stack, Text, Group, ActionIcon, Button } from "@mantine/core";
+import { Box, Stack, Text, Group, ActionIcon, Button, Divider } from "@mantine/core";
 import { HiUserCircle } from "react-icons/hi";
 import { MdArrowForwardIos } from "react-icons/md";
 import Link from "next/link";
@@ -9,7 +9,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { sessionOptions } from "../lib/session";
 import { withIronSessionSsr } from "iron-session/next";
 import { PON, User } from "@prisma/client";
-import { createHash } from "crypto";
+import { createHash, subtle } from "crypto";
 import { mapToHsl } from "../lib/color";
 
 export const getServerSideProps = withIronSessionSsr(
@@ -72,6 +72,7 @@ export default function Dashboard(user: (User & { requests: (Request & { pon: PO
 
   const unissuedRequests = user?.requests.filter((request) => request.pon === null);
   const issuedPons = user?.requests.filter((request) => request.pon !== null).map((request) => request.pon);
+  const pendingPons = user?.requests.filter((request) => request.pon !== null).map((request) => request.pon); // TO CHANGE
 
   return (
     <Box className="flex relative items-center justify-center py-20">
@@ -85,6 +86,7 @@ export default function Dashboard(user: (User & { requests: (Request & { pon: PO
           <HiUserCircle size={50} className="w-20" />
         </Group>
 
+        <Text className="text-3xl font-bold pt-4">Your ePONs: </Text>
         {issuedPons.map((pon, index) => (
           <Group
             key={pon?.id}
@@ -110,7 +112,7 @@ export default function Dashboard(user: (User & { requests: (Request & { pon: PO
           </Group>
         ))}
 
-        <Button
+        <Button variant="subtle" className="text-gray-600 hover:text-gray-200 hover:border-opacity-0 border-gray-700 hover:bg-gray-700 hover:bg-opacity-50 border-4 border-dashed  rounded-lg border-opacity-50"
           onClick={async () => {
             const result = await fetch("/api/request", {
               method: "post",
@@ -123,6 +125,34 @@ export default function Dashboard(user: (User & { requests: (Request & { pon: PO
         >
           Request{unissuedRequests?.length ? ` (${unissuedRequests?.length})` : ""}
         </Button>
+
+        <Divider my="sm" className="mt-6" variant="dashed" size="md" />
+
+        <Text className="text-3xl font-bold">Pending: </Text>
+        {pendingPons.map((pon, index) => (
+          <Group
+            key={pon?.id}
+            position="apart"
+            className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150"
+            sx={{ backgroundColor: "#FFFBFE" }}
+          >
+            <Stack spacing={1} className="font-bold">
+              <Text>PON</Text>
+              <Text sx={{ color: mapToHsl(pon?.id ?? 0) }}>#{pon?.id}</Text>
+            </Stack>
+
+            <Stack spacing={1}>
+              <Text>Date: {pon?.issued_at.toDateString()}</Text>
+              <Text>Status: {pon?.isArchived ? "ARCHIVED" : pon?.isCompleted ? "COMPLETED" : "ISSUED"}</Text>
+            </Stack>
+
+            <Link href={`/pon/${pon?.id}`} passHref>
+              <ActionIcon>
+                <MdArrowForwardIos />
+              </ActionIcon>
+            </Link>
+          </Group>
+        ))}
       </Stack>
     </Box>
   );

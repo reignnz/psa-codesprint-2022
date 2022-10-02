@@ -220,7 +220,7 @@ export default function Pon({
             )}
           </Stack>
           <Stack
-            className="p-2 m-2 flex justify-center items-center mx-auto lg:w-1/2 drop-shadow-md"
+            className="ml-auto p-2 m-2 flex justify-center items-center mx-auto lg:w-1/2 drop-shadow-md"
             spacing={2}
             sx={{ backgroundColor: "#FFFBFE" }}
           >
@@ -262,7 +262,7 @@ export default function Pon({
 
           <Stack
             spacing={2}
-            className="border-solid border-gray-600 border-t-0 border-l-0 border-r-0 border-b-2 py-2"
+            className="border-dashed border-gray-600 border-t-0 border-l-0 border-r-0 border-b-2 py-2"
           >
             <Text className="font-bold text-sm">Driver Name</Text>
             {editDetails ? (
@@ -282,7 +282,7 @@ export default function Pon({
 
           <Stack
             spacing={2}
-            className="border-solid border-gray-600 border-t-0 border-l-0 border-r-0 border-b-2 py-2"
+            className="border-dashed border-gray-600 border-t-0 border-l-0 border-r-0 border-b-2 py-2"
           >
             <Text className="font-bold text-sm">Driver PSA Pass</Text>
             {editDetails ? (
@@ -302,7 +302,7 @@ export default function Pon({
 
           <Stack
             spacing={2}
-            className="border-solid border-gray-600 border-t-0 border-l-0 border-r-0 border-b-2 py-2"
+            
           >
             <Text className="font-bold text-sm">Vehicle Number</Text>
             {editDetails ? (
