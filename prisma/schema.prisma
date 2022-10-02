@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int            @id @default(autoincrement())
+  username        String         @unique
+  password_hash   String
+  firstName       String
+  lastName        String
+  requests        Request[]
+  visibilities    Visibility[]
+  isAdmin         Boolean        @default(false)
+  issuedPons      PON[]          @relation(name: "issuedPons")
+  signatures      Signature[]
+  verififications Verification[]
+  role            Role
+
+  @@map("users")
+}
+
+model Request {
+  id            Int      @id @default(autoincrement())
+  pon           PON?
+  requestedBy   User     @relation(fields: [requestedById], references: [id], onDelete: Cascade)
+  requestedById Int
+  submitted_at  DateTime @default(now())
+
+  @@map("requests")
+}
+
+model PON {
+  id                 Int           @id @default(autoincrement())
+  issuedBy           User          @relation(fields: [issuedById], references: [id], onDelete: Cascade, name: "issuedPons")
+  issuedById         Int
+  company_name       String?
+  vehicle_number     String?
+  driver_name        String?
+  driver_pass_number String?
+  item_descriptions  String[]
+  isCompleted        Boolean       @default(false)
+  isArchived         Boolean       @default(false)
+  signature          Signature?
+  verification       Verification?
+  pictures           Picture[]
+  issued_at          DateTime      @default(now())
+  last_updated_at    DateTime      @updatedAt
+  visibilities       Visibility[]
+  request            Request       @relation(fields: [requestId], references: [id])
+  requestId          Int           @unique
+  status             Status        @default(ISSUED)
+
+  @@map("pon")
+}
+
+model Visibility {
+  pon    PON  @relation(fields: [ponId], references: [id], onDelete: Cascade)
+  ponId  Int  
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  
+
+  @@id([ponId, userId])
+  @@map("visibility")
+}
+
+model Picture {
+  id          String   @id @default(uuid())
+  content     Bytes
+  pon         PON      @relation(fields: [ponId], references: [id], onDelete: Cascade)
+  ponId       Int
+  uploaded_at DateTime @default(now())
+
+  @@map("pictures")
+}
+
+model Signature {
+  pon        PON      @relation(fields: [ponId], references: [id], onDelete: Cascade)
+  ponId      Int      @unique
+  signedBy   User     @relation(fields: [signedById], references: [id], onDelete: Cascade)
+  signedById Int      @unique
+  signed_at  DateTime @default(now())
+
+  @@map("signatures")
+}
+
+model Verification {
+  pon          PON      @relation(fields: [ponId], references: [id], onDelete: Cascade)
+  ponId        Int      @unique
+  verifiedBy   User     @relation(fields: [verifiedById], references: [id], onDelete: Cascade)
+  verifiedById Int      @unique
+  verified_at  DateTime @default(now())
+
+  @@map("verifications")
+}
+
+enum Role {
+  STAFF
+  DESIGNATED_OFFICER
+  AETOS
+}
+
+enum Status {
+  ISSUED
+  PENDING
+  SIGNED
+  VERIFIED
+  ARCHIVED
+}
