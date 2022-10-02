@@ -4,8 +4,11 @@ import { useMediaQuery } from "@mantine/hooks";
 import { withIronSessionSsr } from "iron-session/next";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { IoIosArrowBack } from "react-icons/io";
 import PasswordStrengthMeter from "../components/progressBar";
 import { sessionOptions } from "../lib/session";
+import Link from "next/link";
+import BackButton from "../components/BackButton";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -18,14 +21,12 @@ export const getServerSideProps = withIronSessionSsr(
       };
     }
 
-
     const user = await prisma.user.findUnique({
       where: {
-        id: req.session.id
-      }
-    })
+        id: req.session.id,
+      },
+    });
 
-    
     if (!user) {
       return {
         redirect: {
@@ -107,9 +108,15 @@ export default function AccountPage({
   return (
     <Box className="flex justify-center items-center pt-20">
       <Stack sx={{width: isMobile? '260px' : '320px'}}>
+        <BackButton></BackButton>
         <Group position="apart">
-          <Text className="font-bold text-3xl">Account</Text >
-          <Button onClick={() => router.push("/api/logout")} className="bg-red-500 hover:bg-red-600">Log Out</Button>
+          <Text className="font-bold text-3xl">Account</Text>
+          <Button
+            onClick={() => router.push("/api/logout")}
+            className="bg-red-500 hover:bg-red-600"
+          >
+            Log Out
+          </Button>
         </Group>
         <form
           onSubmit={profileForm.onSubmit(async (data) => {
@@ -147,7 +154,7 @@ export default function AccountPage({
             if (result.ok) {
               alert("Password changed successfully");
             } else {
-                setPasswordFormError(await result.text());
+              setPasswordFormError(await result.text());
             }
           })}
         >

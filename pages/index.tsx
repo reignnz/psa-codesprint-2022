@@ -10,8 +10,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { sessionOptions } from "../lib/session";
 import { withIronSessionSsr } from "iron-session/next";
 import { PON, Role, User, Visibility } from "@prisma/client";
-import { mapToHsl } from "../lib/color";
-import { HiPencilAlt } from "react-icons/hi";
+import { mapToHsl, statusToColor } from "../lib/color";
 import { RiShieldCrossLine } from "react-icons/ri";
 
 export const getServerSideProps = withIronSessionSsr(
@@ -143,16 +142,15 @@ export default function Dashboard(
           </Group>
         </Group>
 
+        <Text className="text-4xl font-bold mt-6">Your PONs</Text>
         {
-          issuedPons.length > 0 && <>
-              <Text className="text-4xl font-bold mt-6">Your PONs</Text>
-            {issuedPons.map((pon, index) => (
-              <PonRow pon={pon!} key={index} />
-            ))}
-          </>
+          issuedPons.map((pon, index) => (
+                <PonRow pon={pon!} key={index} />
+              ))
         }
         
-        <Button variant="subtle" className="text-gray-600 hover:text-gray-200 hover:border-opacity-0 border-gray-700 hover:bg-gray-700 hover:bg-opacity-50 border-4 border-dashed  rounded-lg border-opacity-50"
+        
+        <Button variant="subtle" className="text-gray-600 hover:text-violet-100 hover:border-opacity-0 border-gray-700 hover:bg-violet-700 hover:bg-opacity-100 border-2 border-dashed rounded-lg border-opacity-50 duration-150"
           onClick={async () => {
             const result = await fetch("/api/request", {
               method: "post",
@@ -169,8 +167,7 @@ export default function Dashboard(
 
         {sharedPons.length > 0 && (
           <>
-            <h2>Shared with you</h2>
-
+            <Text className="text-4xl font-bold mt-6">Shared with you</Text>
             {sharedPons.map((pon, index) => (
               <PonRow pon={pon!} key={index} />
             ))}
@@ -186,7 +183,7 @@ function PonRow({ pon }: { pon: PON }) {
     <Group
       key={pon?.id}
       position="apart"
-      className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150"
+      className="rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150 cursor-pointer"
       sx={{ backgroundColor: "#FFFBFE" }}
     >
       <Stack spacing={1} className="font-bold">
@@ -196,14 +193,9 @@ function PonRow({ pon }: { pon: PON }) {
 
       <Stack spacing={1}>
         <Text>Date: {pon?.issued_at.toDateString()}</Text>
-        <Text>
-          Status:{" "}
-          {pon?.isArchived
-            ? "ARCHIVED"
-            : pon?.isCompleted
-            ? "COMPLETED"
-            : "ISSUED"}
-        </Text>
+        <Group spacing={4}>
+          <Text>Status:{" "}</Text><Text sx={{color: statusToColor[pon?.status]}}>{pon?.status}</Text>
+        </Group>
       </Stack>
 
       <Link href={`/pon/${pon?.id}`} passHref>
