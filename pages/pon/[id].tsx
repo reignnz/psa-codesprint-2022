@@ -11,20 +11,27 @@ import {
   Modal,
 } from "@mantine/core";
 import { useState } from "react";
-import { AiOutlineMinusCircle, AiOutlinePrinter } from "react-icons/ai";
+import { AiOutlineMinusCircle } from "react-icons/ai";
 import { HiPencil, HiPlus, HiOutlineX, HiOutlineCheck } from "react-icons/hi";
 import prisma from "../../lib/prisma";
 import { useMediaQuery } from "@mantine/hooks";
 import { withIronSessionSsr } from "iron-session/next";
 import { Picture, PON, Signature, Verification } from "@prisma/client";
 import { sessionOptions } from "../../lib/session";
-import { MdLocationSearching } from "react-icons/md";
-import { TiArrowBackOutline } from "react-icons/ti";
-import { showNotification } from "@mantine/notifications";
 import { mapToHsl } from "../../lib/color";
+import { StaffActionChip, staffActionType } from "../../components/StaffActionChip";
+import { CsoActionChip, CsoActionType } from "../../components/CsoActionChip";
+import { showNotification } from "@mantine/notifications";
 
 interface PonProps {
   editable: boolean;
+}
+
+enum PonState {
+  EDITING,
+  SIGNING,
+  VERIFYING,
+  VIEWING
 }
 
 export const getServerSideProps = withIronSessionSsr(
@@ -51,6 +58,13 @@ export const getServerSideProps = withIronSessionSsr(
         notFound: true,
       };
     }
+    
+    var ponState = PonState.VIEWING;
+    if (pon.status === "ISSUED" && pon.request.requestedById === req.session.id) {
+      ponState = PonState.EDITING;
+    } else if (pon.status === "PENDING" && pon.request.requestedById !== req.session.id) {
+      ponState = PonState.SIGNING;
+    }
 
     return {
       props: {
@@ -58,6 +72,7 @@ export const getServerSideProps = withIronSessionSsr(
         editable:
           pon.request.requestedById === req.session.id &&
           pon.status === "ISSUED",
+        ponState,
       },
     };
   },
@@ -67,6 +82,7 @@ export const getServerSideProps = withIronSessionSsr(
 export default function Pon({
   pon,
   editable,
+  ponState,
 }: PON &
   PonProps & {
     pon: PON & {
@@ -74,7 +90,7 @@ export default function Pon({
       verification: Verification | null;
       pictures: Picture[];
     };
-  }) {
+  } & {ponState: PonState}) {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
   const isTablet = useMediaQuery(
@@ -530,6 +546,32 @@ export default function Pon({
             <></>
           )}     
         </Box>
+
+        {ponState === PonState.EDITING ? (<>
+        <StaffActionChip onClick={async () => {
+          const username = prompt("Enter a username");
+          const result = await fetch(`/api/pon/share`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({id : pon.id, username: username}),
+          })
+
+          if (!result.ok) {
+            showNotification({title: await result.text(), message: ""})
+          }
+        }} action={staffActionType.SHARE}></StaffActionChip>
+
+        <StaffActionChip onClick={() => {}} action={staffActionType.PRINT}></StaffActionChip>
+        </>)
+        : ponState === PonState.SIGNING ? (<>
+          <CsoActionChip onClick={() => {}} action={CsoActionType.REJECT}></CsoActionChip>
+          <CsoActionChip onClick={() => {}} action={CsoActionType.SIGN}></CsoActionChip>
+          </>)
+          : <></>
+      }
+
         </Stack>
     </Box>
   );

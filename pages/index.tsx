@@ -8,10 +8,9 @@ import { useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { sessionOptions } from "../lib/session";
 import { withIronSessionSsr } from "iron-session/next";
-import { PON, User } from "@prisma/client";
+import { PON, User, Visibility } from "@prisma/client";
 import { mapToHsl } from "../lib/color";
 import { HiPencilAlt } from "react-icons/hi";
-import { ImExit } from "react-icons/im";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -39,9 +38,10 @@ export const getServerSideProps = withIronSessionSsr(
           id: req.session.id,
         },
         include: {
-          requests: {
+          requests: { include: { pon: true } },
+          visibilities: {
             include: {
-              pon: true,
+              pon: { include: { request: { include: { requestedBy: true } } } },
             },
           },
         },
@@ -65,7 +65,18 @@ export const getServerSideProps = withIronSessionSsr(
 );
 
 export default function Dashboard(
-  user: User & { requests: (Request & { pon: PON | null })[] }
+  user: User & {
+    requests: (Request & {
+      pon: PON | null;
+    })[];
+    visibilities: (Visibility & {
+      pon: PON & {
+        request: Request & {
+          requestedBy: User;
+        };
+      };
+    })[];
+  }
 ) {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
@@ -83,6 +94,10 @@ export default function Dashboard(
   const issuedPons = user?.requests
     .filter((request) => request.pon !== null)
     .map((request) => request.pon);
+
+  const sharedPons = user.visibilities
+    .map((visibility) => visibility.pon)
+    .filter((pon) => pon.request.requestedBy.id !== user.id);
 
   return (
     <Box className="flex relative items-center justify-center py-20">
@@ -107,56 +122,21 @@ export default function Dashboard(
               </Link>
             )}
 
-            {/* <Link href={`/api/logout`} passHref>
-              <ActionIcon
-                variant="transparent"
-                type="submit"
-                size="xl"
-                className="flex items-center justify-center mx-auto hover:translate-x-1 duration-150"
-                sx={{}}
-              >
-                <ImExit className="w-20 text-gray-700" size={40} />
-              </ActionIcon>
-            </Link> */}
-
             <Link href={`/account`} passHref>
               <HiUserCircle size={50} className="w-20 text-gray-700" />
             </Link>
           </Group>
         </Group>
 
-        {issuedPons.map((pon, index) => (
-          <Group
-            key={pon?.id}
-            position="apart"
-            className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150"
-            sx={{ backgroundColor: "#FFFBFE" }}
-          >
-            <Stack spacing={1} className="font-bold">
-              <Text>PON</Text>
-              <Text sx={{ color: mapToHsl(pon?.id ?? 0) }}>#{pon?.id}</Text>
-            </Stack>
-
-            <Stack spacing={1}>
-              <Text>Date: {pon?.issued_at.toDateString()}</Text>
-              <Text>
-                Status:{" "}
-                {pon?.isArchived
-                  ? "ARCHIVED"
-                  : pon?.isCompleted
-                  ? "COMPLETED"
-                  : "ISSUED"}
-              </Text>
-            </Stack>
-
-            <Link href={`/pon/${pon?.id}`} passHref>
-              <ActionIcon>
-                <MdArrowForwardIos />
-              </ActionIcon>
-            </Link>
-          </Group>
-        ))}
-
+        {
+          issuedPons.length > 0 && <>
+              <h2>Your PONs</h2>
+            {issuedPons.map((pon, index) => (
+              <PonRow pon={pon!} key={index} />
+            ))}
+          </>
+        }
+        
         <Button
           onClick={async () => {
             const result = await fetch("/api/request", {
@@ -171,7 +151,51 @@ export default function Dashboard(
           Request
           {unissuedRequests?.length ? ` (${unissuedRequests?.length})` : ""}
         </Button>
+
+        {sharedPons.length > 0 && (
+          <>
+            <h2>Shared with you</h2>
+
+            {sharedPons.map((pon, index) => (
+              <PonRow pon={pon!} key={index} />
+            ))}
+          </>
+        )}
       </Stack>
     </Box>
+  );
+}
+
+function PonRow({ pon }: { pon: PON }) {
+  return (
+    <Group
+      key={pon?.id}
+      position="apart"
+      className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150"
+      sx={{ backgroundColor: "#FFFBFE" }}
+    >
+      <Stack spacing={1} className="font-bold">
+        <Text>PON</Text>
+        <Text sx={{ color: mapToHsl(pon?.id ?? 0) }}>#{pon?.id}</Text>
+      </Stack>
+
+      <Stack spacing={1}>
+        <Text>Date: {pon?.issued_at.toDateString()}</Text>
+        <Text>
+          Status:{" "}
+          {pon?.isArchived
+            ? "ARCHIVED"
+            : pon?.isCompleted
+            ? "COMPLETED"
+            : "ISSUED"}
+        </Text>
+      </Stack>
+
+      <Link href={`/pon/${pon?.id}`} passHref>
+        <ActionIcon>
+          <MdArrowForwardIos />
+        </ActionIcon>
+      </Link>
+    </Group>
   );
 }
