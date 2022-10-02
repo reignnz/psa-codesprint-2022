@@ -14,3 +14,12 @@ export function mapToHsl(id:number) {
       ")"
     );
   }
+
+export enum statusToColor {
+  REQUESTED = "#0E80EACC",
+  ISSUED = "#430198CC",
+  PENDING = "#EA9F0ECC",
+  SIGNED = "#439801CC",
+  VERIFIED = "#90730ACC",
+  ARCHIVED = "#90730ACC",
+}
