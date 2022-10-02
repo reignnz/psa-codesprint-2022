@@ -87,8 +87,8 @@ export default function LoginPage() {
 
   return (
     <Box className="h-screen bg-no-repeat relative flex items-center justify-center">
-      <Stack sx={{ width: "350px" }}>
-        <Box sx={{ width: isMobile ? "250px" : "380px" }} className="p-5">
+      <Stack sx={{ width: "350px" }} className="mx-auto">
+        <Box sx={{ width: isMobile ? "320px" : "380px" }} className="p-5">
           <Text className="text-3xl mb-4" weight="bold">
             Login.
           </Text>
