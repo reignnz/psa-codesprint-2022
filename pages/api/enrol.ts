@@ -5,6 +5,7 @@ import { EnrolFormData } from "../enrol";
 import crypto from "crypto";
 import hashPassword from "../../lib/hash";
 import prisma from "../../lib/prisma";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 
 export default withIronSessionApiRoute(enrolRoute, sessionOptions);
 
@@ -27,19 +28,28 @@ async function enrolRoute(req: NextApiRequest, res: NextApiResponse) {
   const password = crypto.randomBytes(4).toString("hex");
   const hash = hashPassword(password);
 
-  const result = await prisma.user.create({
-    data: {
-      username: data.username,
-      password_hash: hash,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      role: data.role,
-    },
-  });
+  try {
+    const result = await prisma.user.create({
+      data: {
+        username: data.username,
+        password_hash: hash,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        role: data.role,
+      },
+    });
 
-  if (result) {
-    res.status(200).send(password);
-  } else {
+    if (result) {
+      res.status(200).send(password);
+    } else {
+      res.status(400).send("Failed to create user");
+    }
+  } catch (e) {
+    if (e instanceof PrismaClientKnownRequestError) {
+      if (e.code === "P2002") {
+        res.status(400).send("Username already exists");
+      }
+    }
     res.status(400).send("Failed to create user");
   }
 }

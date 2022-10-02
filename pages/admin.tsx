@@ -1,5 +1,3 @@
-import { GetServerSidePropsContext } from "next";
-import prisma from "../lib/prisma";
 import {
   Button,
   ActionIcon,
@@ -14,26 +12,8 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/router";
-import { useState } from "react";
-
 import PasswordStrengthMeter from "../components/progressBar";
 import { showNotification } from "@mantine/notifications";
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const userCount = await prisma.user.count();
-  if (userCount) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  } else {
-    return {
-      props: {},
-    };
-  }
-}
 
 export declare type EnrolFormData = {
   username: string;
