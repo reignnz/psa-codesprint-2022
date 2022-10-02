@@ -1,14 +1,6 @@
-import {
-  Button,
-  Group,
-  PasswordInput,
-  TextInput,
-  Box,
-  Text,
-  Stack,
-  ActionIcon,
-} from "@mantine/core";
+import { Button, Group, PasswordInput, TextInput, Box, Text, Stack, useMantineTheme } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useMediaQuery } from "@mantine/hooks";
 import { withIronSessionSsr } from "iron-session/next";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -109,9 +101,12 @@ export default function AccountPage({
     });
   }
 
+  const theme = useMantineTheme();
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
+
   return (
     <Box className="flex justify-center items-center pt-20">
-      <Stack className="w-1/4">
+      <Stack sx={{width: isMobile? '260px' : '320px'}}>
         <BackButton></BackButton>
         <Group position="apart">
           <Text className="font-bold text-3xl">Account</Text>
