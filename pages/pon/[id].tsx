@@ -299,7 +299,7 @@ export default function Pon({
           </Stack>
         </Group>
         <Stack
-          className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-md p-5 relative"
+          className="rounded-2xl drop-shadow-md p-5 my-4 relative"
           sx={{ backgroundColor: "#FFFBFE" }}
         >
           {editable == false ? (
@@ -402,7 +402,7 @@ export default function Pon({
         </Stack>
 
         <Stack
-          className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-md p-5 my-5 relative"
+          className="rounded-2xl drop-shadow-md p-5 mb-4 relative"
           sx={{ backgroundColor: "#FFFBFE" }}
         >
           {editable == false ? (
@@ -490,7 +490,7 @@ export default function Pon({
         </Stack>
 
         <Box
-          className="border-2 border-solid border-gray-400 rounded-2xl drop-shadow-md p-5 my-5 print:hidden"
+          className="rounded-2xl drop-shadow-md p-5 mb-4 print:hidden"
           sx={{ backgroundColor: "#FFFBFE" }}
         >
           {editable == false ? (
