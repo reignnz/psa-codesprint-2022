@@ -8,6 +8,7 @@ import PasswordStrengthMeter from "../components/progressBar";
 import { sessionOptions } from "../lib/session";
 import BackButton from "../components/BackButton";
 import prisma from "../lib/prisma";
+import { showNotification } from "@mantine/notifications";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -151,9 +152,9 @@ export default function AccountPage({
           onSubmit={passwordForm.onSubmit(async (data) => {
             const result = await submitForm("/api/account/change", data);
             if (result.ok) {
-              alert("Password changed successfully");
+              showNotification({title:"Password changed successfully", message:""});
             } else {
-              setPasswordFormError(await result.text());
+              showNotification({ title: await result.text(), message: "", color: "red"});
             }
           })}
         >

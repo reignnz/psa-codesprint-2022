@@ -9,6 +9,7 @@ import {
   TextInput,
   useMantineTheme,
   Modal,
+  Space,
 } from "@mantine/core";
 import { useState } from "react";
 import { AiOutlineMinusCircle } from "react-icons/ai";
@@ -85,7 +86,8 @@ export const getServerSideProps = withIronSessionSsr(
       ponState = PonState.EDITING;
     } else if (
       pon.status === "PENDING" &&
-      pon.request.requestedById !== req.session.id
+      pon.request.requestedById !== req.session.id &&
+      user.role === "STAFF"
     ) {
       ponState = PonState.SIGNING;
     }
@@ -602,6 +604,8 @@ export default function Pon({
               });
 
               if (!result.ok) {
+                showNotification({ title: await result.text(), message: "" , color: "red"});
+              } else {
                 showNotification({ title: await result.text(), message: "" });
               }
             }}
@@ -621,6 +625,7 @@ export default function Pon({
                     body: JSON.stringify({ id: pon.id }),
                   });
                   showNotification({ title: await result.text(), message: "" });
+                  location.reload();
                 }}
                 action={staffActionType.SUBMIT}
               ></StaffActionChip>
@@ -647,9 +652,10 @@ export default function Pon({
                     location.reload();
                   }
                 }}
-                className="bg-red-700 drop-shadow-sm hover:shadow-red-200 hover:shadow-md duration-300 active:shadow-none"
+                className="bg-red-700 drop-shadow-sm hover:shadow-red-200 hover:shadow-md hover:scale-105 active:scale-95 active:shadow-sm duration-300 active:shadow-none text-white text-xl  p-4"
                 action={CsoActionType.REJECT}
               ></CsoActionChip>
+              <Space></Space>
               <CsoActionChip
                 onClick={async () => {
                   const result = await fetch(`/api/pon/sign`, {
@@ -666,7 +672,7 @@ export default function Pon({
                     location.reload();
                   }
                 }}
-                className="bg-green-700 shadow-sm hover:shadow-green-200 hover:shadow-md duration-300 active:shadow-none"
+                className="bg-green-700 shadow-sm hover:shadow-green-200 hover:shadow-md hover:scale-105 active:scale-95 duration-300 active:shadow-none  text-white text-xl text-bold p-4"
                 action={CsoActionType.SIGN}
               ></CsoActionChip>
             </>

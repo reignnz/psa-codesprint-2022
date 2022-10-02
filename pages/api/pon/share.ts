@@ -13,8 +13,8 @@ async function ponShareRoute(req: NextApiRequest, res: NextApiResponse) {
     }
     const { id, username } = req.body;
     
-    if (await prisma.pON.count({where: {id: id, status: "ISSUED", request: {requestedBy: {id: req.session.id}}}}) === 0) {
-        return res.status(401).send("Unable to edit PON");
+    if (await prisma.pON.count({where: {id: id, request: {requestedBy: {id: req.session.id}}}}) === 0) {
+        return res.status(401).send("Unable to share PON");
     }
 
     try {
