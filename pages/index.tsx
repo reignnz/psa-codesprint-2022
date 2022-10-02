@@ -1,5 +1,5 @@
-import { Box, Stack, Text, Group, ActionIcon, Button } from "@mantine/core";
-import { HiUserCircle } from "react-icons/hi";
+import { Box, Stack, Text, Group, ActionIcon, Button, Tooltip } from "@mantine/core";
+import { HiOutlineUser, HiOutlineUsers, HiUserCircle } from "react-icons/hi";
 import { BsFillPersonPlusFill } from 'react-icons/bs'
 import { MdArrowForwardIos } from "react-icons/md";
 import Link from "next/link";
@@ -9,9 +9,9 @@ import { useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { sessionOptions } from "../lib/session";
 import { withIronSessionSsr } from "iron-session/next";
-import { PON, User, Visibility } from "@prisma/client";
+import { PON, Role, User, Visibility } from "@prisma/client";
 import { mapToHsl, statusToColor } from "../lib/color";
-import { HiPencilAlt } from "react-icons/hi";
+import { RiShieldCrossLine } from "react-icons/ri";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -106,7 +106,12 @@ export default function Dashboard(
         <Group position="apart">
           <Stack spacing={2}>
             <Text className="font-bold text-3xl"> Hello, </Text>
-            <Text className="font-bold"> {user?.firstName}! </Text>
+            <Group spacing={10}>
+              <Text className="font-bold text-3xl"> {user?.firstName}! </Text>
+              {user?.role == Role.STAFF ? <HiOutlineUser className="mx-auto" size={20} />:
+              user?.role == Role.DESIGNATED_OFFICER ? <HiOutlineUsers className="mx-auto" size={20} /> :
+              <RiShieldCrossLine className="mx-auto" size={20} />}
+            </Group>
           </Stack>
           <Group spacing={10}>
             {user.isAdmin && (
