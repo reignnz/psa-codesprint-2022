@@ -4,6 +4,7 @@ import hashPassword from "../../../lib/hash";
 import validatePassword from "../../../lib/password_check";
 import { sessionOptions } from "../../../lib/session";
 import bcrypt from "bcrypt";
+import prisma from "../../../lib/prisma";
 
 export default withIronSessionApiRoute(updateRoute, sessionOptions);
 

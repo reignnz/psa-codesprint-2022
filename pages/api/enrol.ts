@@ -4,6 +4,7 @@ import { sessionOptions } from "../../lib/session";
 import { EnrolFormData } from "../enrol";
 import crypto from "crypto";
 import hashPassword from "../../lib/hash";
+import prisma from "../../lib/prisma";
 
 export default withIronSessionApiRoute(enrolRoute, sessionOptions);
 
