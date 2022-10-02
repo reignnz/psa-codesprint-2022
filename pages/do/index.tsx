@@ -9,6 +9,7 @@ import { useMediaQuery, useReducedMotion } from "@mantine/hooks";
 import { withIronSessionSsr } from "iron-session/next";
 import { sessionOptions } from "../../lib/session";
 import { PON, User, Request } from "@prisma/client";
+import { statusToColor } from "../../lib/color";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -100,14 +101,6 @@ export default function Dashboard(props: {
     );
   }
 
-  enum statusToColor {
-    REQUESTED = "#0E80EACC",
-    ISSUED = "#430198CC",
-    PENDING = "#EA9F0ECC",
-    SIGNED = "#439801CC",
-    VERIFIED = "#90730ACC",
-  }
-
   async function issuePon(id: number) {
     const result = await fetch("/api/issue", {
       method: "POST",
@@ -150,7 +143,7 @@ export default function Dashboard(props: {
           >
             <Group
               position="apart"
-              className="rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150"
+              className="rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150 cursor-pointer"
               sx={{ backgroundColor: "#FFFBFE" }}
             >
               <Stack spacing={1} className="font-bold">
@@ -194,12 +187,8 @@ export default function Dashboard(props: {
                 <Text>User: {pon.request.requestedBy.username}</Text>
                 <Group spacing={4}>
                   <Text>Status: </Text>
-                  <Text sx={{ color: statusToColor["ISSUED"] }}>
-                    {pon.isArchived
-                      ? "ARCHIVED"
-                      : pon.isCompleted
-                      ? "COMPLETED"
-                      : "ISSUED"}
+                  <Text sx={{ color: statusToColor[pon.status] }}>
+                    {pon.status}
                   </Text>
                 </Group>
               </Stack>

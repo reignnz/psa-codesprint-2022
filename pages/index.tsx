@@ -10,7 +10,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { sessionOptions } from "../lib/session";
 import { withIronSessionSsr } from "iron-session/next";
 import { PON, User, Visibility } from "@prisma/client";
-import { mapToHsl } from "../lib/color";
+import { mapToHsl, statusToColor } from "../lib/color";
 import { HiPencilAlt } from "react-icons/hi";
 
 export const getServerSideProps = withIronSessionSsr(
@@ -163,8 +163,7 @@ export default function Dashboard(
 
         {sharedPons.length > 0 && (
           <>
-            <text className="text-3xl">Shared with you</text>
-
+            <Text className="text-4xl font-bold mt-6">Shared with you</Text>
             {sharedPons.map((pon, index) => (
               <PonRow pon={pon!} key={index} />
             ))}
@@ -180,7 +179,7 @@ function PonRow({ pon }: { pon: PON }) {
     <Group
       key={pon?.id}
       position="apart"
-      className="rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150"
+      className="rounded-2xl drop-shadow-sm p-5 hover:shadow-md duration-150 cursor-pointer"
       sx={{ backgroundColor: "#FFFBFE" }}
     >
       <Stack spacing={1} className="font-bold">
@@ -190,10 +189,9 @@ function PonRow({ pon }: { pon: PON }) {
 
       <Stack spacing={1}>
         <Text>Date: {pon?.issued_at.toDateString()}</Text>
-        <Text>
-          Status:{" "}
-          {pon?.status}
-        </Text>
+        <Group spacing={4}>
+          <Text>Status:{" "}</Text><Text sx={{color: statusToColor[pon?.status]}}>{pon?.status}</Text>
+        </Group>
       </Stack>
 
       <Link href={`/pon/${pon?.id}`} passHref>
