@@ -35,7 +35,6 @@ const PasswordStrengthMeter: React.FC<PasswordStrengthMeterType> = ({
 }) => {
   const { score } = zxcvbn(password); // score: 0 - 4
   const { desc, color } = getPasswordAttrs(score);
-  if (password.length === 0) return null; // don't render if password id empty
 
   return (
     <div>
