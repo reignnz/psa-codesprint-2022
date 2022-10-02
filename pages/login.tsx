@@ -126,17 +126,17 @@ export default function LoginPage() {
               type="submit"
               variant="transparent"
               size="xl"
-              className="flex items-center justify-center mx-auto pt-4 mt-4"
+              className="flex items-center justify-center mx-auto pt-4 mt-4 hover:scale-110 duration-125" 
               sx={{}}
             >
               <Stack spacing={2} className="">
-                <IoIosArrowForward size={50} color={"black"} />
+                <IoIosArrowForward size={50} className="" color={"black"} />
                 <Text className="text-gray-600 mx-auto">Login</Text>
               </Stack>
             </ActionIcon>
           </form>
 
-          <Group position="center" className="pt-10">
+          <Group position="center" className="pt-10 ">
             <Image src={PSALogo} alt="" height={200} width={300} />
           </Group>
         </Box>
