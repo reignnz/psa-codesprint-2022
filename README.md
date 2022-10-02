@@ -1,3 +1,6 @@
+<img src="public/logo.svg">
+
+
 # LongKenKaiMy PSA Code Sprint :runner:
 
 This is the repository for the LongKenKaiMy PSA Code Sprint. The code sprint is a 2-day event where participants will work on a project of their choice. The project can be anything from a simple script to a full-fledged application. Our goal is to have fun and learn something new.
@@ -74,7 +77,8 @@ The proposed solution is less error-prone because the PON is a digital document 
 2. The CSO can access the PON by clicking on the item.
 3. The CSO would be able to verify the PON and sign the PON.
 
-## Verifying and Archiving PON :warning:[YET TO BE IMPLEMENTED] :warning:
+## Verifying and Archiving PON :cop:
+:warning:YET TO BE IMPLEMENTED :warning:
 1. AETOS officer can login to the website.
 2. The AETOS officer can access the PON by clicking on the item.
 3. The AETOS officer would be able to verify the PON and archive the PON.
