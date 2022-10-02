@@ -20,6 +20,7 @@ import { HiOutlineUser, HiOutlineUsers } from "react-icons/hi";
 import { RiShieldCrossLine } from "react-icons/ri";
 import BackButton from "../../components/BackButton";
 import prisma from "../../lib/prisma";
+import { showNotification } from "@mantine/notifications";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
@@ -74,7 +75,7 @@ export default function EnrolPage() {
       alert(`Enrolment successful. New password: ${await response.text()}`);
       router.push("/enrol");
     } else {
-      setError(await response.text());
+      showNotification({ title: await response.text(), message: "" , color: "red" });
     }
   }
 
