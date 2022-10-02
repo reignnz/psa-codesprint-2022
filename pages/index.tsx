@@ -137,14 +137,13 @@ export default function Dashboard(
           </Group>
         </Group>
 
+        <Text className="text-4xl font-bold mt-6">Your PONs</Text>
         {
-          issuedPons.length > 0 && <>
-              <Text className="text-4xl font-bold mt-6">Your PONs</Text>
-            {issuedPons.map((pon, index) => (
-              <PonRow pon={pon!} key={index} />
-            ))}
-          </>
+          issuedPons.map((pon, index) => (
+                <PonRow pon={pon!} key={index} />
+              ))
         }
+        
         
         <Button variant="subtle" className="text-gray-600 hover:text-violet-100 hover:border-opacity-0 border-gray-700 hover:bg-violet-700 hover:bg-opacity-100 border-2 border-dashed rounded-lg border-opacity-50 duration-150"
           onClick={async () => {
