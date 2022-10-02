@@ -8,22 +8,39 @@ import { sessionOptions } from "../lib/session";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }) {
-    if (!req.session.user) {
+    if (!req.session.id) {
       return {
         redirect: {
           destination: "/",
           permanent: false,
         },
       };
-    } else {
+    }
+
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: req.session.id
+      }
+    })
+
+    
+    if (!user) {
       return {
-        props: {
-          firstName: req.session.user.firstName,
-          lastName: req.session.user.lastName,
-          username: req.session.user.username,
+        redirect: {
+          destination: "/",
+          permanent: false,
         },
       };
     }
+
+    return {
+      props: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        username: user.username,
+      },
+    };
   },
   sessionOptions
 );
