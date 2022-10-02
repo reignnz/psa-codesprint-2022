@@ -90,7 +90,7 @@ The proposed solution is less error-prone because the PON is a digital document 
 2. The AETOS officer can access the PON by clicking on the item.
 3. The AETOS officer would be able to verify the PON and archive the PON.
 
-## Other Resources: :ledger:
+# Other Resources: :ledger:
 Object-Class diagrams: [Lucid Chart](https://lucid.app/lucidchart/75730a74-03c5-473b-8e6a-645ce68dafbf/edit?invitationId=inv_42d0eedb-2664-4afe-b6f0-13cb832c8d03#)
 
 UI Design and mockups:  [Figma](https://www.figma.com/file/684nDpzEBmhjsDABpbPrKL/PSA-Codesprint-2022-UI%2FUX?node-id=0%3A1)
