@@ -200,9 +200,9 @@ export default function Pon({
           sx={{ width: isMobile ? "270px" : "600px" }}
         >
           <Stack spacing={1}>
-            <Text className="sm:text-md lg:text-lg font-bold"> PON </Text>
+            <Text className="sm:text-lg lg:text-2xl font-bold"> PON </Text>
             {editable == false ? (
-              <></>
+              <Text className="text-gray-500">[COMPANY NAME]</Text>
             ) : (
               <Group noWrap className="sm:text-sm lg:text-lg flex relative" spacing={0}>
                 {editName ? (
@@ -213,7 +213,7 @@ export default function Pon({
                     }}
                   />
                 ) : (
-                  <Text>{editCompanyName}</Text>
+                  <Text>{editCompanyName}</Text> 
                 )}
                 {editName ? (
                   <ActionIcon
