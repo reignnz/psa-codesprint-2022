@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import hashPassword from "../../lib/hash";
 import validatePassword from "../../lib/password_check";
+import prisma from "../../lib/prisma";
 
 export default async function handler(
   req: NextApiRequest,
